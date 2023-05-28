@@ -3,14 +3,6 @@ import MainHome from "../pages/MainHome";
 
 
 
-// const  publicRoutes = [
-//     {
-//         path: "/",
-//         element: <MainHome />
-//     }
-
-// ]
-
 const  publicRoutes = createBrowserRouter([
     {
         path: "/",

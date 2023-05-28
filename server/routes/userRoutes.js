@@ -12,7 +12,6 @@ const router = express.Router();
 // Route level Middleware - To protect route.
 router.use('/changepassword', checkUserAuth);
 
-
 // Public Routes
 router.post('/register', userRegistration);
 router.post('/login', userLogin);
