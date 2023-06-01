@@ -25,7 +25,7 @@ const userRegistration = async (req, res)=>{
                         const newUser = await createUser.save();
                         // Now generate JWT 
                         const token = jwt.sign({userID: newUser._id}, process.env.JWT_SECRET_KEY, {expiresIn: '5d'});
-                        res.status(201).json({user:newUser, token});
+                        res.send({user:newUser, token, status: 201});
 
                } catch (error) {
                     res.send({"status": "failed", "message": "unable to register"});
