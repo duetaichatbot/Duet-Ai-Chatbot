@@ -1,5 +1,5 @@
 import React from 'react'
-import Header from '../webincludes/Header';
+import Header from '../components/Header';
 
 
 const MainHome = () => {
@@ -7,7 +7,7 @@ const MainHome = () => {
   
   return (
     <>
-     <Header />
+    <Header/>
     <div>
       <h1>Home page of Duet Chat Bot</h1>
     </div>

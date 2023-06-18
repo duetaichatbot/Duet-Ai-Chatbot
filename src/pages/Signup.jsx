@@ -5,12 +5,9 @@ import { registerUser } from "../redux/userSlice";
 import "../../src/index.css";
 import chatbot from "../assets/chatbot3.gif";
 
-
 const Signup = () => {
-  
   const navigate = useNavigate();
-  const [error, setError] = useState("");
-  const [loader, setLoader] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const [registerFields, setRegisterFields] = useState({
     name: "",
     email: "",
@@ -19,6 +16,8 @@ const Signup = () => {
     tc: false,
   });
   const dispatch = useDispatch();
+  const { isLoggin, user, loading, error } = useSelector((state) => state);
+  // console.log(isLoggin, user, loading, error, 'slice data');
 
   const handleRegisterField = (e) => {
     if (e.target.name === "tc") {
@@ -31,20 +30,23 @@ const Signup = () => {
     }
   };
 
-  const handleRegister = (e) => {
+  const handleRegister =  (e) => {
     e.preventDefault();
-    setError("");
-    setLoader(true);
-    dispatch(registerUser(registerFields)).then((res) => {
-      console.log(res, "this is created user response...");
-      if (res.payload.status === 201) {
-        setLoader(false);
-        navigate("/");
-      } else {
-        setError(res.payload.message);
-        setLoader(false);
-      }
-    });
+      dispatch(registerUser(registerFields))
+      .then(res => {
+
+        if (res.payload.status === "successful") {
+          navigate("/");
+        } else if (res.payload.status === "failed") {
+          
+          setErrorMessage(res.payload.message);
+        }
+      }).catch(err => {
+        console.log(err, 'catch error');
+        setErrorMessage(err.message)
+      })
+        
+
   };
 
   return (
@@ -58,7 +60,7 @@ const Signup = () => {
                 style={{ fontSize: "18px" }}
               >
                 {" "}
-                {error}
+                {errorMessage}
               </h3>
             </div>
             <div className="signup_heading">
@@ -115,7 +117,7 @@ const Signup = () => {
               <br />
 
               <div className="signup_btn_div">
-                {loader ? (
+                {loading ? (
                   <button className="btn btn-primary" type="button" disabled>
                     <span
                       className="spinner-border spinner-border-sm"
