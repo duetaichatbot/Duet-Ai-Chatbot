@@ -1,8 +1,46 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "../../src/index.css";
 import chatbot from "../assets/chatbot6.gif";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { userLogin } from '../redux/userSlice';
 
 const Login = () => {
+
+   const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state);
+  const navigate = useNavigate();
+
+
+  const [errorMessage, setErrorMessage] = useState("");
+   const [loginFields, setLoginFields] = useState({
+    email: "",
+    password: "",
+   })
+
+   const handleLoginFields = (e) => {
+     setLoginFields({...loginFields, [e.target.name]: e.target.value});
+   }
+
+   const handleUserLogin = (e) => {
+       e.preventDefault();
+       console.log(loginFields, 'xxx');
+       dispatch(userLogin(loginFields))
+       .then(res => {
+
+        if (res.payload.status === "successful") {
+          navigate("/");
+        } else if (res.payload.status === "failed") {
+          
+          setErrorMessage(res.payload.message);
+        }
+      }).catch(err => {
+        console.log(err, 'catch error');
+        setErrorMessage(err.message)
+      })
+
+      }
+
   return (
     <div className='login_container container-fluid'>
 
@@ -16,6 +54,15 @@ const Login = () => {
 
 
           <div className='login_form_container'>
+          <div>
+              <h3
+                className="error_msg text-center"
+                style={{ fontSize: "18px" }}
+              >
+                {" "}
+                {errorMessage}
+              </h3>
+            </div>
 
             <div className="signup_heading">
               <span className="signup_span">Login</span>
@@ -29,24 +76,40 @@ const Login = () => {
                 type="email"
                 name="email"
                 placeholder="Enter Email"
-              />
+                value={loginFields.email}
+                onChange={handleLoginFields}
+                />
               <br />
               <input
                 className="password_input signup_input"
                 type="password"
                 name="password"
+                value={loginFields.password}
+                onChange={handleLoginFields}
 
                 placeholder="Enter Password"
               />
               <span>No account? <a class="createOne" href="">Create one!</a></span>
 
               <div className='login_btn_div mt-3'>
-                <button
-                  className="btn btn-primary login_btn"
-                  type="button"
-                >
-                  LOGIN
-                </button>
+              {loading ? (
+                  <button className="btn btn-primary" type="button" disabled>
+                    <span
+                      className="spinner-border spinner-border-sm"
+                      role="status"
+                      aria-hidden="true"
+                    ></span>
+                    Loading...
+                  </button>
+                ) : (
+                  <button
+                    className="btn btn-primary"
+                    type="button"
+                    onClick={handleUserLogin}
+                  >
+                    LOGIN
+                  </button>
+                )}
               </div>
             </form>
             {/*  */}

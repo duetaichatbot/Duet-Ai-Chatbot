@@ -18,6 +18,19 @@ export const registerUser = createAsyncThunk(
 );
 
 
+export const userLogin = createAsyncThunk("userlogin",
+async (userData)=> {
+  try {
+    const response = await axiosInstance.post(
+      `/api/user/login`,
+      userData
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+);
 
 export const authSlice = createSlice({
   name: "userAuth",
@@ -48,6 +61,24 @@ export const authSlice = createSlice({
         state.error = null;
       })
       .addCase(registerUser.rejected, (state, action) => {
+        state.isLoggin = false;
+        state.user = null;
+        state.loading = false;
+        state.error = action.error.message;
+      })
+      .addCase(userLogin.pending, (state) => {
+        state.isLoggin = false;
+        state.user = null;
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(userLogin.fulfilled, (state, action) => {
+        state.isLoggin = true;
+        state.user = action.payload;
+        state.loading = false;
+        state.error = null;
+      })
+      .addCase(userLogin.rejected, (state, action) => {
         state.isLoggin = false;
         state.user = null;
         state.loading = false;

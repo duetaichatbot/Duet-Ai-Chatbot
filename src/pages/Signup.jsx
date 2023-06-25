@@ -15,9 +15,10 @@ const Signup = () => {
     cpassword: "",
     tc: false,
   });
+
+  
   const dispatch = useDispatch();
-  const { isLoggin, user, loading, error } = useSelector((state) => state);
-  // console.log(isLoggin, user, loading, error, 'slice data');
+  const { loading } = useSelector((state) => state);
 
   const handleRegisterField = (e) => {
     if (e.target.name === "tc") {

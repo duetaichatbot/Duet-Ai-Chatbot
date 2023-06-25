@@ -158,3 +158,45 @@ position: relative;
 .createOne{
   text-decoration: none;
 }
+
+
+
+/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */
+.text-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 0;
+  width: 0;
+  background: violet;
+  text-align: center;
+  opacity: 0;
+  transition: opacity 0.5s ease-in, width 0.5s ease-in, height 0.5s ease-in;
+  box-shadow: 0 0 0 rgba(238, 130, 238, 0.5);
+}
+
+.text-box-show {
+  opacity: 1;
+  height: 70vh;
+  width: 500px;
+  box-shadow: 0 0 50px rgba(238, 130, 238, 0.5);
+}
+
+.text-box button{
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  padding: 10px;
+}
+
+/* xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx */
+.error-message {
+  opacity: 0;
+  transition: opacity 0.3s ease-in;
+  color: red;
+}
+
+.error-message.show {
+  opacity: 1;
+}

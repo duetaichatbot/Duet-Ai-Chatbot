@@ -50,7 +50,7 @@ const userLogin = async (req, res) => {
                 if (isMatch) {
                      // Now generate JWT 
                      const token = jwt.sign({userID: user._id}, process.env.JWT_SECRET_KEY, {expiresIn: '5d'});
-                    res.status(200).json({user, token});
+                    res.send({user, token, status: "successful"});
                 }else{
                     res.send({"status": "failed", "message": "invalid email or password"});
                 }
@@ -65,6 +65,9 @@ const userLogin = async (req, res) => {
 
     }
 }
+
+
+
 // change user password after login through settings etc..
 const changeUserPassword = async (req, res) => {
     const { password, cpassword } = req.body;
