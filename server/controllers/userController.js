@@ -1,6 +1,9 @@
 import userModal from "../models/User.js";
 import bcrypt from  "bcrypt";
 import jwt from "jsonwebtoken";
+import transporter from "../config/emailConfig.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 // register new user...
 const userRegistration = async (req, res)=>{
@@ -98,7 +101,14 @@ const sendEmailResetPassword = async (req, res) => {
             const token = jwt.sign({ userID: user._id }, secret, { expiresIn: '1d' });
             const link = `http://127.0.0.1:3000/api/user/reset/${user._id}/${token}`;
             console.log(link, 'starting token');
-            res.send({ "status": "success", "message": "Email sent successfully" });
+            // send email...
+            let info = await transporter.sendMail({
+                from: 'duetaichatbot@gmail.com',
+                to: user.email,
+                subject: "DUET AI CHATBOT Password Reset Link",
+                html: `<a href=${link}>Click Here</a> to reset password`
+            })
+            res.send({ "status": "success", "message": "Email Sent.. Check Your Email", "info": info });
         } else {
             res.send({ "status": "failed", "message": "Email does not exist" });
         }
@@ -106,6 +116,7 @@ const sendEmailResetPassword = async (req, res) => {
         res.send({ "status": "failed", "message": "Email is required" });
     }
 }
+
 
 // After email send allow password reset..
 const userPasswordReset = async (req, res) => {

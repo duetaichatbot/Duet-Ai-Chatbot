@@ -16,7 +16,7 @@ router.use('/changepassword', checkUserAuth);
 router.post('/register', userRegistration);
 router.post('/login', userLogin);
 router.post('/send-reset-password', sendEmailResetPassword)
-router.post('/reset/password/:id/:token', userPasswordReset)
+router.post('/reset-password/:id/:token', userPasswordReset)
 
 
 // Protected Routes
