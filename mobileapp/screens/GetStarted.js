@@ -50,7 +50,7 @@ const GetStarted = ({ navigation }) => {
           <View style={{ marginTop: 20, width: "100%", alignItems: "center" }}>
             <TouchableOpacity
               style={{
-                backgroundColor: "#329AE1",
+                backgroundColor: "#C9F432",
                 padding: 10,
                 borderRadius: 5,
                 width: "150%",
@@ -59,7 +59,7 @@ const GetStarted = ({ navigation }) => {
             >
               <Text
                 style={{
-                  color: "#fff",
+                  color: "#000",
                   fontWeight: "bold",
                   letterSpacing: 1,
                   textAlign: "center",
@@ -81,12 +81,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
     position: "relative",
   },
-
   backgroundImage: {
     flex: 1,
     resizeMode: "contain",
   },
-
   getstartedText: {
     fontSize: 30,
     color: "#fff",
@@ -94,6 +92,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
     letterSpacing: 1,
     textTransform: "capitalize",
+
   },
   footer_sec: {
     position: "absolute",
