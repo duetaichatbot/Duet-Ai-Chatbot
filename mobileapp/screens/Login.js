@@ -9,13 +9,13 @@ const Login = ({ navigation }) => {
 
   return (
     <ImageBackground
-    source={require('../assets/Auth/sin1.png')}
+    source={require('../assets/Auth/welcomebg.jpg')}
     style={styles.backgroundImage}
   >
     <View style={styles.container}>
       <Text style={styles.getstartedText}>Welcome to the creators hub!</Text>
       <View style={{ marginTop:20, width:"100%", alignItems: 'center',}}>
-      <Button onPress={null} title="Let's Get Started" />
+      <Button style={{backgroundColor: '#C1F031'}} onPress={null} title="Let's Get Started" />
       </View>
     </View>
     </ImageBackground>
@@ -40,6 +40,7 @@ const styles = StyleSheet.create({
      fontSize:24,
      color:"#fff",
      fontWeight:"500",
+     
     //  fontFamily:"NunitoSans-VariableFont_YTLC,opsz,wdth,wght",
     },
    

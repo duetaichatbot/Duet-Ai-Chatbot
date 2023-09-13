@@ -11,7 +11,6 @@ const RootNavigation = (props) => {
   };
 
   const transitionConfig = {
-    // Customize the transition animation here
     animation: "spring",
     config: {
       stiffness: 500,
@@ -26,7 +25,7 @@ const RootNavigation = (props) => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="getstarted"
+        initialRouteName={props.initRoute}
         screenOptions={{
           ...screenOptions,
           transitionSpec: {
@@ -41,7 +40,7 @@ const RootNavigation = (props) => {
           component={GetStarted}
           options={{ title: "getstarted" }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="Login"
           component={Login}
           options={{ title: "Login" }}
@@ -50,6 +49,5 @@ const RootNavigation = (props) => {
     </NavigationContainer>
   );
 };
-
 
 export default RootNavigation;
