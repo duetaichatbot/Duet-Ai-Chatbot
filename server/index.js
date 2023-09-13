@@ -106,7 +106,6 @@ app.post("/webhook", async (req, res) => {
           },
         ],
       });
-      console.log("session: ", `${req.body.session}/contexts/coolDrinkAsk`);
     } else if (intentName === "checkOrderStatus") {
       let responseText = "";
 

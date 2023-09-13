@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import axiosInstance from '../../axiosConfig'
+import axiosInstance from '../../axiosConfig';
 
 
 export const registerUser = createAsyncThunk(
@@ -88,5 +88,5 @@ export const authSlice = createSlice({
 });
 
 
-export const { logout } = authSlice.actions
+export const { logout } = authSlice.actions;
 export default authSlice.reducer;
