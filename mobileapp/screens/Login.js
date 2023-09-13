@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ImageBackground  } from 'react-native'
+import { View, Text, StyleSheet, ImageBackground, Button  } from 'react-native'
 import React from 'react'
 
 
