@@ -7,9 +7,11 @@ import {
   Image,
   SafeAreaView,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
+import FontAwesome5 from "react-native-vector-icons/MaterialCommunityIcons";
 
 const Welcome = ({ navigation }) => {
+  const [logoutBtn, setLogoutBtn] = useState(false);
   return (
     <ImageBackground
       source={require("../assets/auth/welcomebg.jpg")}
@@ -29,15 +31,43 @@ const Welcome = ({ navigation }) => {
               DUET AI
             </Text>
           </View>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 15 }}>
+          <View
+            style={{
+              position: "relative",
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 15,
+              width:180
+            }}
+          >
             <Text style={{ color: "#fff" }}>
               {"Malik Muhammad".substring(0, 20)}
             </Text>
-
-            <Image
-              style={{ width: 50, height: 50, marginVertical: 20 }}
-              source={require("../assets/auth/user_profile.png")}
-            />
+            <TouchableOpacity onPress={()=>setLogoutBtn(!logoutBtn)}>
+              <Image
+                style={{ width: 50, height: 50, marginVertical: 20 }}
+                source={require("../assets/auth/user_profile.png")}
+              />
+            </TouchableOpacity>
+            {logoutBtn ? (
+              <View
+                style={{
+                  position: "absolute",
+                  bottom: -15,
+                  right: 5,
+                  borderRadius: 20,
+                  width: 65,
+                  height: 30,
+                  backgroundColor: "lightgray",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <TouchableOpacity onPress={() => navigation.navigate("login")}>
+                  <Text>Logout</Text>
+                </TouchableOpacity>
+              </View>
+            ) : null}
           </View>
         </View>
         <View
@@ -69,18 +99,32 @@ const Welcome = ({ navigation }) => {
                 width: "50%",
                 marginTop: 50,
               }}
-              onPress={() => navigation.navigate("login")}
+              onPress={() => navigation.navigate("chat")}
             >
-              <Text
+              <View
                 style={{
-                  color: "#000",
-                  fontWeight: "bold",
-                  letterSpacing: 1,
-                  textAlign: "center",
+                  flexDirection: "row",
+                  justifyContent: "space-evenly",
+                  alignItems: "center",
                 }}
               >
-                Ask Question
-              </Text>
+                <Text
+                  style={{
+                    color: "#000",
+                    fontWeight: "bold",
+                    letterSpacing: 1,
+                    textAlign: "center",
+                  }}
+                >
+                  Ask Question?
+                </Text>
+                <FontAwesome5
+                  name="robot-confused"
+                  type="MaterialCommunityIcons"
+                  color="black"
+                  size={20}
+                />
+              </View>
             </TouchableOpacity>
           </View>
         </View>

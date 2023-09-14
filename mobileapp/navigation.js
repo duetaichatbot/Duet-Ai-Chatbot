@@ -5,6 +5,8 @@ import GetStarted from "./screens/GetStarted";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import Welcome from "./screens/Welcome";
+import Chat from "./screens/Chat";
+import Feedback from "./screens/Feedback";
 
 const RootNavigation = (props) => {
   const Stack = createNativeStackNavigator();
@@ -50,12 +52,22 @@ const RootNavigation = (props) => {
         <Stack.Screen
           name="signup"
           component={Signup}
-          options={{ title: "Login" }}
+          options={{ title: "signup" }}
         />
         <Stack.Screen
           name="home"
           component={Welcome}
-          options={{ title: "Login" }}
+          options={{ title: "home" }}
+        />
+        <Stack.Screen
+          name="chat"
+          component={Chat}
+          options={{ title: "chat" }}
+        />
+        <Stack.Screen
+          name="feedback"
+          component={Feedback}
+          options={{ title: "feedback" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
