@@ -11,7 +11,7 @@ import React from "react";
 const GetStarted = ({ navigation }) => {
   return (
     <ImageBackground
-      source={require("../assets/Auth/welcomebg.jpg")}
+      source={require("../assets/auth/welcomebg.jpg")}
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
@@ -29,7 +29,7 @@ const GetStarted = ({ navigation }) => {
           <View>
             <Image
               style={{ width: 250, height: 300, marginVertical: 20 }}
-              source={require("../assets/Auth/robot.png")}
+              source={require("../assets/auth/robot.png")}
             />
           </View>
         </View>
@@ -55,7 +55,7 @@ const GetStarted = ({ navigation }) => {
                 borderRadius: 5,
                 width: "150%",
               }}
-              onPress={() => navigation.navigate("Login")}
+              onPress={() => navigation.navigate("login")}
             >
               <Text
                 style={{

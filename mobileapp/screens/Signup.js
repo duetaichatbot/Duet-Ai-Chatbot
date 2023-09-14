@@ -10,19 +10,18 @@ import {
 } from "react-native";
 // import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const Login = ({ navigation }) => {
+const Signup = ({ navigation }) => {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, onChangePass] = useState("");
+  const [cpassword, onChangecPass] = useState("");
 
   let emailRegex = /^\w+[\w.-]*@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 
-  const handleLoginUser = async () => {
-    navigation.navigate("home");
-
-  };
+  const handleLoginUser = async () => {};
 
   const signUpdNav = () => {
-    navigation.navigate("signup");
+    navigation.navigate("login");
   };
 
   const NavigatetoForgotpassScreen = () => {
@@ -38,15 +37,16 @@ const Login = ({ navigation }) => {
       source={require("../assets/auth/welcomebg.jpg")}
       style={styles.backgroundImage}
     >
-      
       <View style={styles.container}>
-
-
-
-
-        
-        <Text style={styles.Heading}>Login</Text>
-        <Text style={styles.text}>Signin to your account</Text>
+        <Text style={styles.Heading}>Signup</Text>
+        <Text style={styles.text}>Create your account</Text>
+        <TextInput
+          value={name}
+          onChangeText={setName}
+          style={styles.inputs}
+          placeholder="Name"
+          placeholderTextColor="#c2c0c0"
+        />
         <TextInput
           value={email}
           onChangeText={setEmail}
@@ -63,14 +63,15 @@ const Login = ({ navigation }) => {
           secureTextEntry={false}
           keyboardShouldPersistTaps="handled"
         />
-
-        <View>
-          <View style={styles.forgotpass}>
-            <TouchableOpacity onPress={NavigatetoForgotpassScreen}>
-              <Text style={{ color: "lightblue" }}>Forgot password</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
+        <TextInput
+          value={cpassword}
+          onChangeText={onChangecPass}
+          style={styles.inputs}
+          placeholder="Confirm Password"
+          placeholderTextColor="#c2c0c0"
+          secureTextEntry={false}
+          keyboardShouldPersistTaps="handled"
+        />
 
         <View style={{ marginTop: 20, width: "100%", alignItems: "center" }}>
           <TouchableOpacity
@@ -90,15 +91,15 @@ const Login = ({ navigation }) => {
                 textAlign: "center",
               }}
             >
-              Login
+              Signup
             </Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.footertext}>
-          <Text style={{ color: "#fff" }}>Don't have an account?</Text>
+          <Text style={{ color: "#fff" }}>Already have an account?</Text>
           <TouchableOpacity onPress={signUpdNav}>
-            <Text style={{ color: "lightblue" }}> Register Now</Text>
+            <Text style={{ color: "lightblue" }}> Login</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -151,4 +152,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default Signup;

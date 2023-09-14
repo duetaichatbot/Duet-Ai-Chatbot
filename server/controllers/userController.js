@@ -12,7 +12,7 @@ const userRegistration = async (req, res) => {
   if (user) {
     res.send({ status: "failed", message: "Email already exists" });
   } else {
-    // validate all field contain data or not
+    
     if (name && email && password && cpassword && tc) {
       if (password === cpassword) {
         try {
