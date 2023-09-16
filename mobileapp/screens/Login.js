@@ -6,21 +6,47 @@ import {
   TextInput,
   ImageBackground,
   TouchableOpacity,
-  KeyboardAvoidingView,
+  ToastAndroid,
 } from "react-native";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AxiosInstance from "../config";
 
 const Login = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, onChangePass] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
 
   let emailRegex = /^\w+[\w.-]*@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 
   const handleLoginUser = async () => {
-    navigation.navigate("home");
-
+    setAuthError("");
+    if (emailRegex.test(email)) {
+      setLoading(true);
+      try {
+        const res = await AxiosInstance.post("/api/user/login", {
+          email,
+          password,
+        });
+        if (res.status === 200) {
+          await AsyncStorage.setItem(
+            "userdata",
+            JSON.stringify(res.data.user.email)
+          );
+          ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
+          navigation.navigate("home");
+        }
+        setLoading(false);
+        setEmail("");
+        onChangePass("");
+      } catch (error) {
+        setAuthError(error.response.data.message);
+        setLoading(false);
+      }
+    } else {
+      setAuthError("Email is not Valid");
+    }
   };
-
   const signUpdNav = () => {
     navigation.navigate("signup");
   };
@@ -29,24 +55,15 @@ const Login = ({ navigation }) => {
     navigation.navigate("forgotpass");
   };
 
-  const goBack = () => {
-    navigation.goBack();
-  };
-
   return (
     <ImageBackground
       source={require("../assets/auth/welcomebg.jpg")}
       style={styles.backgroundImage}
     >
-      
       <View style={styles.container}>
-
-
-
-
-        
         <Text style={styles.Heading}>Login</Text>
         <Text style={styles.text}>Signin to your account</Text>
+        <Text style={{ color: "red" }}>{authError}</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
@@ -63,7 +80,6 @@ const Login = ({ navigation }) => {
           secureTextEntry={false}
           keyboardShouldPersistTaps="handled"
         />
-
         <View>
           <View style={styles.forgotpass}>
             <TouchableOpacity onPress={NavigatetoForgotpassScreen}>
@@ -80,7 +96,7 @@ const Login = ({ navigation }) => {
               borderRadius: 5,
               width: "80%",
             }}
-            onPress={handleLoginUser}
+            onPress={!loading ? handleLoginUser : null}
           >
             <Text
               style={{
@@ -90,7 +106,7 @@ const Login = ({ navigation }) => {
                 textAlign: "center",
               }}
             >
-              Login
+              {loading ? "loading..." : "Login"}
             </Text>
           </TouchableOpacity>
         </View>

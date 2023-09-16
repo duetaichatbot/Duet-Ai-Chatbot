@@ -9,9 +9,35 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import FontAwesome5 from "react-native-vector-icons/MaterialCommunityIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Welcome = ({ navigation }) => {
   const [logoutBtn, setLogoutBtn] = useState(false);
+  const [userEmail, setUserEmail] = React.useState("");
+
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const email = await AsyncStorage.getItem("userdata");
+        setUserEmail(JSON.parse(email));
+      } catch (error) {
+        console.log(error, "unable to get user email!");
+      }
+    })();
+  }, []);
+
+  
+  const logoutUser = async () => {
+    AsyncStorage.clear()
+      .then(() => {
+        (err) => {
+          console.log(err);
+        };
+      })
+      .catch((err) => console.log("unable to logout", err));
+    navigation.navigate("login");
+  };
+
   return (
     <ImageBackground
       source={require("../assets/auth/welcomebg.jpg")}
@@ -37,13 +63,12 @@ const Welcome = ({ navigation }) => {
               flexDirection: "row",
               alignItems: "center",
               gap: 15,
-              width:180
             }}
           >
             <Text style={{ color: "#fff" }}>
-              {"Malik Muhammad".substring(0, 20)}
+              {userEmail?.split("@")?.[0]?.substring(0, 20)}
             </Text>
-            <TouchableOpacity onPress={()=>setLogoutBtn(!logoutBtn)}>
+            <TouchableOpacity onPress={() => setLogoutBtn(!logoutBtn)}>
               <Image
                 style={{ width: 50, height: 50, marginVertical: 20 }}
                 source={require("../assets/auth/user_profile.png")}
@@ -63,7 +88,7 @@ const Welcome = ({ navigation }) => {
                   justifyContent: "center",
                 }}
               >
-                <TouchableOpacity onPress={() => navigation.navigate("login")}>
+                <TouchableOpacity onPress={logoutUser}>
                   <Text>Logout</Text>
                 </TouchableOpacity>
               </View>
@@ -90,7 +115,6 @@ const Welcome = ({ navigation }) => {
               looking at its layout. The point of using Lorem Ipsum is that it
               has a more-or-less normal distribution of letters.
             </Text>
-
             <TouchableOpacity
               style={{
                 backgroundColor: "#C9F432",

@@ -6,19 +6,50 @@ import {
   TextInput,
   ImageBackground,
   TouchableOpacity,
-  KeyboardAvoidingView,
+  ToastAndroid,
 } from "react-native";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
+import AxiosInstance from "../config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Signup = ({ navigation }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, onChangePass] = useState("");
   const [cpassword, onChangecPass] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [authError, setAuthError] = useState("");
 
   let emailRegex = /^\w+[\w.-]*@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 
-  const handleLoginUser = async () => {};
+  const handleSignupUser = async () => {
+    setAuthError("");
+    if (emailRegex.test(email)) {
+      setLoading(true);
+      try {
+        const res = await AxiosInstance.post("/api/user/register", {
+          name,
+          email,
+          password,
+          cpassword,
+        });
+        if (res.status === 201) {
+          await AsyncStorage.setItem("userdata", JSON.stringify(res.data.user.email));
+          ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
+          navigation.navigate("home");
+        }
+        setLoading(false);
+        setName("");
+        setEmail("");
+        onChangePass("");
+        onChangecPass("");
+      } catch (error) {
+        setAuthError(error.response.data.message);
+        setLoading(false);
+      }
+    } else {
+      setAuthError("Email is not Valid");
+    }
+  };
 
   const signUpdNav = () => {
     navigation.navigate("login");
@@ -26,10 +57,6 @@ const Signup = ({ navigation }) => {
 
   const NavigatetoForgotpassScreen = () => {
     navigation.navigate("forgotpass");
-  };
-
-  const goBack = () => {
-    navigation.goBack();
   };
 
   return (
@@ -40,6 +67,7 @@ const Signup = ({ navigation }) => {
       <View style={styles.container}>
         <Text style={styles.Heading}>Signup</Text>
         <Text style={styles.text}>Create your account</Text>
+        <Text style={{ color: "red" }}>{authError}</Text>
         <TextInput
           value={name}
           onChangeText={setName}
@@ -60,7 +88,7 @@ const Signup = ({ navigation }) => {
           style={styles.inputs}
           placeholder="Password"
           placeholderTextColor="#c2c0c0"
-          secureTextEntry={false}
+          secureTextEntry={true}
           keyboardShouldPersistTaps="handled"
         />
         <TextInput
@@ -69,7 +97,7 @@ const Signup = ({ navigation }) => {
           style={styles.inputs}
           placeholder="Confirm Password"
           placeholderTextColor="#c2c0c0"
-          secureTextEntry={false}
+          secureTextEntry={true}
           keyboardShouldPersistTaps="handled"
         />
 
@@ -81,7 +109,7 @@ const Signup = ({ navigation }) => {
               borderRadius: 5,
               width: "80%",
             }}
-            onPress={handleLoginUser}
+            onPress={!loading ? handleSignupUser : null}
           >
             <Text
               style={{
@@ -91,7 +119,7 @@ const Signup = ({ navigation }) => {
                 textAlign: "center",
               }}
             >
-              Signup
+              {loading ? "loading..." : "Signup"}
             </Text>
           </TouchableOpacity>
         </View>

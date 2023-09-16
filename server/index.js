@@ -26,7 +26,8 @@ app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 // //////////////////////////////////////////////
 // ///////// Dialogflow Integration..   ////////
-// request object
+// request object...
+
 const webhookReq = {
   responseId: "response-id",
   session: "projects/project-id/agent/sessions/session-id",

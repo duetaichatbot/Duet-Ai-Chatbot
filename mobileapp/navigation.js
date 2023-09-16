@@ -38,7 +38,6 @@ const RootNavigation = (props) => {
           },
         }}
       >
-        {/* screens */}
         <Stack.Screen
           name="getstarted"
           component={GetStarted}
