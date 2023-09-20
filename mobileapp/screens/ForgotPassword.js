@@ -11,48 +11,41 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosInstance from "../config";
 
-const Login = ({ navigation }) => {
+const ForgotPassword = ({ navigation }) => {
   const [email, setEmail] = useState("");
-  const [password, onChangePass] = useState("");
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
 
   let emailRegex = /^\w+[\w.-]*@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 
   const handleLoginUser = async () => {
-    setAuthError("");
-    if (emailRegex.test(email)) {
-      setLoading(true);
-      try {
-        const res = await AxiosInstance.post("/api/user/login", {
-          email,
-          password,
-        });
-        if (res.status === 200) {
-          await AsyncStorage.setItem(
-            "userdata",
-            JSON.stringify(res.data.user.email)
-          );
-          ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
-          navigation.navigate("home");
-        }
-        setLoading(false);
-        setEmail("");
-        onChangePass("");
-      } catch (error) {
-        setAuthError(error.response.data.message);
-        setLoading(false);
-      }
-    } else {
-      setAuthError("Email is not Valid");
-    }
-  };
-  const signUpdNav = () => {
-    navigation.navigate("signup");
-  };
-
-  const NavigatetoForgotpassScreen = () => {
-    navigation.navigate("forgot");
+    navigation.navigate("otp");
+    // setAuthError("");
+    // if (emailRegex.test(email)) {
+    //   setLoading(true);
+    //   try {
+    //     const res = await AxiosInstance.post("/api/user/login", {
+    //       email,
+    //       password,
+    //     });
+    //     if (res.status === 200) {
+    //       await AsyncStorage.setItem(
+    //         "userdata",
+    //         JSON.stringify(res.data.user.email)
+    //       );
+    //       ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
+    //       navigation.navigate("home");
+    //     }
+    //     setLoading(false);
+    //     setEmail("");
+    //     onChangePass("");
+    //   } catch (error) {
+    //     setAuthError(error.response.data.message);
+    //     setLoading(false);
+    //   }
+    // } else {
+    //   setAuthError("Email is not Valid");
+    // }
   };
 
   return (
@@ -61,32 +54,15 @@ const Login = ({ navigation }) => {
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <Text style={styles.Heading}>Login</Text>
-        <Text style={styles.text}>Signin to your account</Text>
+        <Text style={styles.Heading}>Forgot Password</Text>
         <Text style={{ color: "red" }}>{authError}</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
           style={styles.inputs}
-          placeholder="Email"
+          placeholder="Enter Your Email"
           placeholderTextColor="#c2c0c0"
         />
-        <TextInput
-          value={password}
-          onChangeText={onChangePass}
-          style={styles.inputs}
-          placeholder="Password"
-          placeholderTextColor="#c2c0c0"
-          secureTextEntry={true}
-          keyboardShouldPersistTaps="handled"
-        />
-        <View>
-          <View style={styles.forgotpass}>
-            <TouchableOpacity onPress={NavigatetoForgotpassScreen}>
-              <Text style={{ color: "lightblue" }}>Forgot password</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
 
         <View style={{ marginTop: 20, width: "100%", alignItems: "center" }}>
           <TouchableOpacity
@@ -106,15 +82,8 @@ const Login = ({ navigation }) => {
                 textAlign: "center",
               }}
             >
-              {loading ? "loading..." : "Login"}
+              {loading ? "loading..." : "Send Email"}
             </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.footertext}>
-          <Text style={{ color: "#fff" }}>Don't have an account?</Text>
-          <TouchableOpacity onPress={signUpdNav}>
-            <Text style={{ color: "lightblue" }}> Register Now</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -148,7 +117,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   Heading: {
-    fontSize: 35,
+    fontSize: 30,
     fontWeight: "600",
     color: "#fff",
     marginBottom: 5,
@@ -167,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Login;
+export default ForgotPassword;

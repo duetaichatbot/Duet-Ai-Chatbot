@@ -7,6 +7,8 @@ import Signup from "./screens/Signup";
 import Welcome from "./screens/Welcome";
 import Chat from "./screens/Chat";
 import Feedback from "./screens/Feedback";
+import ForgotPassword from "./screens/ForgotPassword";
+import Otp from "./screens/Otp";
 
 const RootNavigation = (props) => {
   const Stack = createNativeStackNavigator();
@@ -67,6 +69,16 @@ const RootNavigation = (props) => {
           name="feedback"
           component={Feedback}
           options={{ title: "feedback" }}
+        />
+        <Stack.Screen
+          name="forgot"
+          component={ForgotPassword}
+          options={{ title: "forgot" }}
+        />
+        <Stack.Screen
+          name="otp"
+          component={Otp}
+          options={{ title: "otp" }}
         />
       </Stack.Navigator>
     </NavigationContainer>

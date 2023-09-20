@@ -33,7 +33,10 @@ const Signup = ({ navigation }) => {
           cpassword,
         });
         if (res.status === 201) {
-          await AsyncStorage.setItem("userdata", JSON.stringify(res.data.user.email));
+          await AsyncStorage.setItem(
+            "userdata",
+            JSON.stringify(res.data.user.email)
+          );
           ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
           navigation.navigate("home");
         }

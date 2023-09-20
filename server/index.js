@@ -65,8 +65,6 @@ const webhookReq = {
   originalDetectIntentRequest: {},
 };
 
-
-
 app.post("/webhook", async (req, res) => {
   try {
     const body = req.body;
@@ -75,15 +73,13 @@ app.post("/webhook", async (req, res) => {
     const params = body.queryResult.parameters;
 
     if (intentName === "placeOrder") {
-      console.log("collected params: ", params);
-      console.log("collected params: ", params.person);
-
       const newOrder = new orderModel({
         orderName: params.person.name,
         pizzaSize: params.pizzaSize,
         pizzaFlavour: params.pizzaFlavour,
         qty: params.qty,
       });
+      
       const savedOrder = await newOrder.save();
       console.log(`New order added:`, savedOrder);
 
@@ -107,58 +103,6 @@ app.post("/webhook", async (req, res) => {
           },
         ],
       });
-    } else if (intentName === "checkOrderStatus") {
-      let responseText = "";
-
-      const recentOrders = await orderModel
-        .find({})
-        .sort({ createdOn: -1 })
-        .limit(15);
-
-      let latestPendingOrders = [];
-      for (let i = 0; i < recentOrders.length; i++) {
-        if (recentOrders[i].status === "pending") {
-          latestPendingOrders.push(recentOrders[i]);
-        } else {
-          break;
-        }
-      }
-
-      if (latestPendingOrders.length === 0) {
-        responseText = `${recentOrders[0].orderName}, your order for ${
-          recentOrders[0].qty
-        } ${recentOrders[0].pizzaSize} ${
-          recentOrders[0].pizzaFlavour
-        } pizza is ${recentOrders[0].status} ${moment(
-          recentOrders[0].createdOn
-        ).fromNow()}`;
-      } else {
-        responseText += `${latestPendingOrders[0].orderName}, you have ${
-          latestPendingOrders.length
-        } pending ${latestPendingOrders.length > 1 ? "orders." : "order"}`;
-
-        latestPendingOrders.map((eachOrder, i) => {
-          if (latestPendingOrders.length > 1) {
-            responseText += ` order number ${i + 1},`;
-          } else {
-            responseText += ` for`;
-          }
-
-          responseText += ` ${eachOrder.qty} ${eachOrder.pizzaSize} ${eachOrder.pizzaFlavour} pizza,`;
-        });
-
-        responseText += ` please be patient your order will be delivered soon.`;
-      }
-
-      res.send({
-        fulfillmentMessages: [
-          {
-            text: {
-              text: [responseText],
-            },
-          },
-        ],
-      });
     } else {
       res.send({
         fulfillmentMessages: [
@@ -172,8 +116,17 @@ app.post("/webhook", async (req, res) => {
     }
   } catch (error) {
     console.log(error, "server error!");
-    res.status(500).send({
-      message: "Internal Server Error",
+    // res.status(500).send({
+    //   message: "Internal Server Error",
+    // });
+    res.send({
+      fulfillmentMessages: [
+        {
+          text: {
+            text: ["some went wrong in server! please try again.."],
+          },
+        },
+      ],
     });
   }
 });
@@ -182,7 +135,9 @@ app.post("/webhook", async (req, res) => {
 // //////////////////////////////////////////////
 // authentication api's
 app.use("/api/user/", userRouter);
-app.use("/test", (req, res) => res.send("test ngrok server"));
+app.use("/test", (req, res) => {
+  res.send("test ngrok server");
+});
 
 app.listen(port, () => {
   console.log(`Server listening at localhost:${port}`);
