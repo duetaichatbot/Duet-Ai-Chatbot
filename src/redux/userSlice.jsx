@@ -18,6 +18,7 @@ export const registerUser = createAsyncThunk(
 );
 
 
+
 export const userLogin = createAsyncThunk("userlogin",
 async (userData)=> {
   try {
@@ -66,6 +67,7 @@ export const authSlice = createSlice({
         state.loading = false;
         state.error = action.error.message;
       })
+      // login
       .addCase(userLogin.pending, (state) => {
         state.isLoggin = false;
         state.user = null;

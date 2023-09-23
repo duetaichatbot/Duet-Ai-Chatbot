@@ -5,6 +5,7 @@ import morgan from "morgan";
 import express from "express";
 import { connectDb } from "./config/connectdb.js";
 import userRouter from "./routes/userRoutes.js";
+import faqRouter from "./routes/faq.js";
 import orderModel from "./models/OrderPlace.js";
 import momentTZ from "moment-timezone";
 import moment from "moment";
@@ -181,6 +182,7 @@ app.post("/webhook", async (req, res) => {
 // //////////////////////////////////////////////
 // authentication api's
 app.use("/api/user/", userRouter);
+app.use("/api/faq/", faqRouter);
 app.use("/test", (req, res) => res.send("test ngrok server"));
 
 app.listen(port, () => {
