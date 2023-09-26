@@ -8,58 +8,44 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from "react-native";
-import AxiosInstance from "../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AxiosInstance from "../config";
 
-const Signup = ({ navigation }) => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+const NewPassword = ({ route, navigation }) => {
+  const { email } = route.params;
   const [password, onChangePass] = useState("");
   const [cpassword, onChangecPass] = useState("");
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
 
-  let emailRegex = /^\w+[\w.-]*@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
-
-  const handleSignupUser = async () => {
+  const handleNewPassword = async () => {
     setAuthError("");
-    if (emailRegex.test(email)) {
+    if (password && cpassword) {
       setLoading(true);
       try {
-        const res = await AxiosInstance.post("/api/user/register", {
-          name,
-          email,
+        const res = await AxiosInstance.patch("/api/user/reset-password", {
           password,
           cpassword,
+          email,
         });
-        if (res.status === 201) {
-          await AsyncStorage.setItem(
-            "userdata",
-            JSON.stringify(res.data.user.email)
+        console.log(res, "sdfsdf");
+        if (res.status === 200) {
+          ToastAndroid.show(
+            "password change successfully!",
+            ToastAndroid.SHORT
           );
-          ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
-          navigation.navigate("home");
+          navigation.navigate("login");
         }
         setLoading(false);
-        setName("");
-        setEmail("");
         onChangePass("");
-        onChangecPass("");
       } catch (error) {
+        console.log(error.message);
         setAuthError(error.response.data.message);
         setLoading(false);
       }
     } else {
-      setAuthError("Email is not Valid");
+      setAuthError("All Feilds Required*");
     }
-  };
-
-  const signUpdNav = () => {
-    navigation.navigate("login");
-  };
-
-  const NavigatetoForgotpassScreen = () => {
-    navigation.navigate("forgotpass");
   };
 
   return (
@@ -68,28 +54,14 @@ const Signup = ({ navigation }) => {
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-        <Text style={styles.Heading}>Signup</Text>
-        <Text style={styles.text}>Create your account</Text>
+        <Text style={styles.Heading}>New Password</Text>
         <Text style={{ color: "red" }}>{authError}</Text>
-        <TextInput
-          value={name}
-          onChangeText={setName}
-          style={styles.inputs}
-          placeholder="Name"
-          placeholderTextColor="#c2c0c0"
-        />
-        <TextInput
-          value={email}
-          onChangeText={setEmail}
-          style={styles.inputs}
-          placeholder="Email"
-          placeholderTextColor="#c2c0c0"
-        />
+
         <TextInput
           value={password}
           onChangeText={onChangePass}
           style={styles.inputs}
-          placeholder="Password"
+          placeholder="New Password"
           placeholderTextColor="#c2c0c0"
           secureTextEntry={true}
           keyboardShouldPersistTaps="handled"
@@ -112,7 +84,7 @@ const Signup = ({ navigation }) => {
               borderRadius: 5,
               width: "80%",
             }}
-            onPress={!loading ? handleSignupUser : null}
+            onPress={!loading ? handleNewPassword : null}
           >
             <Text
               style={{
@@ -122,15 +94,8 @@ const Signup = ({ navigation }) => {
                 textAlign: "center",
               }}
             >
-              {loading ? "loading..." : "Signup"}
+              {loading ? "loading..." : "Submit"}
             </Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.footertext}>
-          <Text style={{ color: "#fff" }}>Already have an account?</Text>
-          <TouchableOpacity onPress={signUpdNav}>
-            <Text style={{ color: "lightblue" }}> Login</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -156,14 +121,8 @@ const styles = StyleSheet.create({
     color: "white",
     fontStyle: "normal",
   },
-  text: {
-    fontSize: 18,
-    fontWeight: "400",
-    color: "#D3D3D3",
-    marginBottom: 30,
-  },
   Heading: {
-    fontSize: 35,
+    fontSize: 30,
     fontWeight: "600",
     color: "#fff",
     marginBottom: 5,
@@ -182,4 +141,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Signup;
+export default NewPassword;

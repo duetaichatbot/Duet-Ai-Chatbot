@@ -122,7 +122,6 @@ const Login = ({ navigation }) => {
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

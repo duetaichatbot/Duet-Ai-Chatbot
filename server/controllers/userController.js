@@ -75,38 +75,12 @@ const userLogin = async (req, res) => {
   }
 };
 
-// change user password after login through settings etc..
-const changeUserPassword = async (req, res) => {
-  const { password, cpassword } = req.body;
-  if (password && cpassword) {
-    if (password === cpassword) {
-      const salt = await bcrypt.genSalt(10);
-      const newHashPassword = await bcrypt.hash(password, salt);
-      await userModal.findByIdAndUpdate(req.user._id, {
-        $set: { password: newHashPassword },
-      });
-      res.send({ status: "200", message: "change password successfully" });
-    } else {
-      res.send({
-        status: "failed",
-        message: "password and confirm password not matched",
-      });
-    }
-  } else {
-    res.send({ status: "failed", message: "All Fields are required" });
-  }
-};
-
 // forget password to send email...
 const sendEmailResetPassword = async (req, res) => {
   const { email } = req.body;
   if (email) {
     const user = await userModal.findOne({ email: email });
     if (user) {
-      // const secret = user._id + process.env.JWT_SECRET_KEY;
-      // const token = jwt.sign({ userID: user._id }, secret, { expiresIn: "1d" });
-      // const link = `http://127.0.0.1:3000/api/user/reset/${user._id}/${token}`;
-
       // create otp
       const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
       user.otpCode = otpCode;
@@ -125,7 +99,7 @@ const sendEmailResetPassword = async (req, res) => {
 
       res.status(200).json({
         status: "success",
-        message: "Email Sent.. Check Your Email",
+        message: "OTP Sent.. Check Your Email",
         // info: info,
       });
     } else {
@@ -176,6 +150,7 @@ const verifyOtp = async (req, res) => {
 const userPasswordReset = async (req, res) => {
   try {
     const { password, cpassword, email } = req.body;
+    console.log(email, "sdsdf");
     const user = await userModal.findOne({ email: email });
 
     if (!user) {
@@ -190,7 +165,6 @@ const userPasswordReset = async (req, res) => {
       await userModal.findByIdAndUpdate(user._id, {
         $set: { password: newHashPassword },
       });
-
       res
         .status(200)
         .json({ status: "successful", message: "Password reset successfully" });
@@ -205,11 +179,47 @@ const userPasswordReset = async (req, res) => {
       .json({ status: "failed", message: "Internal server error" });
   }
 };
+
+const resendOtp = async (req, res) => {
+  const { email } = req.body;
+  if (email) {
+    const user = await userModal.findOne({ email: email });
+    if (user) {
+      // create otp
+      const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
+      user.otpCode = otpCode;
+      user.otpExpire = Date.now() + 600000;
+      console.log(otpCode, "code here otp.....");
+      // send email...
+      // let info = await transporter.sendMail({
+      //   from: "duetaichatbot@gmail.com",
+      //   to: user.email,
+      //   subject: "DUET AI CHATBOT Password Reset Link",
+      //   html: `<p>Confirm Your OTP ${otpCode}</p>`,
+      // });
+
+      // save otp in user schema...
+      await user.save();
+
+      res.status(200).json({
+        status: "success",
+        message: "OTP Sent.. Check Your Email",
+        // info: info,
+      });
+    } else {
+      res
+        .status(404)
+        .json({ status: "failed", message: "Email does not exist" });
+    }
+  } else {
+    res.status(500).json({ status: "failed", message: "Email is required" });
+  }
+};
 export {
   userRegistration,
   userLogin,
-  changeUserPassword,
   sendEmailResetPassword,
   userPasswordReset,
   verifyOtp,
+  resendOtp,
 };
