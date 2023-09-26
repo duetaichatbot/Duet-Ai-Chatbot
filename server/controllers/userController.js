@@ -138,41 +138,17 @@ const sendEmailResetPassword = async (req, res) => {
   }
 };
 
-// After email send allow password reset..
-const userPasswordReset = async (req, res) => {
-  const { password, cpassword } = req.body;
-  const { id, token } = req.params;
-  const user = await userModal.findById(id);
-  const new_secret = user._id + process.env.JWT_SECRET_KEY;
-  try {
-    console.log(token, "xxxxx", new_secret);
-    jwt.verify(token, new_secret);
-    if (password && cpassword) {
-      if (password === cpassword) {
-        const salt = await bcrypt.genSalt(10);
-        const newHashPassword = await bcrypt.hash(password, salt);
-        await userModal.findByIdAndUpdate(id, {
-          $set: { password: newHashPassword },
-        });
-        res.send({ status: "200", message: "Password reset successfully" });
-      } else {
-        res.send({ status: "failed", message: "Passwords do not match" });
-      }
-    }
-  } catch (error) {
-    res.send({ status: "failed", message: "Token does not match" });
-  }
-};
-
 const verifyOtp = async (req, res) => {
   try {
-    const otp = req.body.otp; 
-    const email = req.headers.email;
+    const otp = req.body.otp;
+    const email = req.body.email;
 
     const findUser = await userModal.findOne({ email: email });
 
     if (!findUser) {
-      return res.status(404).json({ status: "failed", message: "User not found!" }); // Use 404 for "Not Found"
+      return res
+        .status(404)
+        .json({ status: "failed", message: "User not found!" }); // Use 404 for "Not Found"
     }
 
     if (findUser.otpExpire < Date.now()) {
@@ -183,17 +159,52 @@ const verifyOtp = async (req, res) => {
     }
 
     if (findUser.otpCode.toString() === otp.toString()) {
-      return res.status(200).json({ status: "successful", message: "OTP verified!" }); // Correct the typo 'successfull' to 'successful'
+      return res
+        .status(200)
+        .json({ status: "successful", message: "OTP verified!" }); // Correct the typo 'successfull' to 'successful'
     }
 
     res.status(400).json({ status: "failed", message: "Invalid code" });
   } catch (error) {
     console.error(error); // Log the error for debugging purposes
-    res.status(500).json({ status: "failed", message: "Internal server error" }); // Add a meaningful response for internal server error
+    res
+      .status(500)
+      .json({ status: "failed", message: "Internal server error" }); // Add a meaningful response for internal server error
   }
 };
 
+const userPasswordReset = async (req, res) => {
+  try {
+    const { password, cpassword, email } = req.body;
+    const user = await userModal.findOne({ email: email });
 
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: "failed", message: "User not found!" }); // Use 404 for "Not Found"
+    }
+
+    if (password === cpassword) {
+      const salt = await bcrypt.genSalt(10);
+      const newHashPassword = await bcrypt.hash(password, salt);
+      await userModal.findByIdAndUpdate(user._id, {
+        $set: { password: newHashPassword },
+      });
+
+      res
+        .status(200)
+        .json({ status: "successful", message: "Password reset successfully" });
+    } else {
+      res
+        .status(400)
+        .json({ status: "failed", message: "Passwords do not match" });
+    }
+  } catch (error) {
+    res
+      .status(500)
+      .json({ status: "failed", message: "Internal server error" });
+  }
+};
 export {
   userRegistration,
   userLogin,

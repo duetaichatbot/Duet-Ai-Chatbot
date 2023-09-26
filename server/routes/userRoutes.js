@@ -17,13 +17,8 @@ const router = express.Router();
 router.post("/register", userRegistration);
 router.post("/login", userLogin);
 router.post("/forgot-password", sendEmailResetPassword);
-router.post("/verify-otp/:userId", verifyOtp);
-
-
-
-
-
-router.post("/reset-password/:id/:token", userPasswordReset);
+router.post("/verify-otp", verifyOtp);
+router.patch("/reset-password", userPasswordReset);
 
 // Protected Routes
 router.post("/changepassword", changeUserPassword);
