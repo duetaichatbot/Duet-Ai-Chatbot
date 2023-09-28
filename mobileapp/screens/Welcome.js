@@ -67,7 +67,7 @@ const Welcome = ({ navigation }) => {
       <SafeAreaView style={styles.container}>
         <View style={styles.header_sec}>
           <View>
-            <Text
+            {/* <Text
               style={{
                 color: "#fff",
                 fontSize: 18,
@@ -76,7 +76,11 @@ const Welcome = ({ navigation }) => {
               }}
             >
               DUET AI
-            </Text>
+            </Text> */}
+            <Image source={require("../assets/auth/logo.png")}
+            style={{width: 100, height: 50}}
+            />
+
           </View>
           <View
             style={{

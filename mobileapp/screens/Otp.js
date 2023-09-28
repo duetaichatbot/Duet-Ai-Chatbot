@@ -88,7 +88,6 @@ const Otp = ({ route, navigation }) => {
               key={index}
               ref={otpInputs[index]}
               style={styles.inputs}
-              placeholder="0"
               keyboardType="numeric"
               maxLength={1}
               value={digit}
