@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   ImageBackground,
   TouchableOpacity,
   ToastAndroid,
+  BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosInstance from "../config";
@@ -44,7 +45,7 @@ const Login = ({ navigation }) => {
         setLoading(false);
       }
     } else {
-      setAuthError("Email is not Valid");
+      setAuthError("Email is not valid");
     }
   };
   const signUpdNav = () => {
@@ -55,6 +56,28 @@ const Login = ({ navigation }) => {
     navigation.navigate("forgot");
   };
 
+
+
+  const [isLoginScreen, setIsLoginScreen] = useState(true);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (isLoginScreen) {
+        // BackHandler.exitApp();
+        navigation.navigate("getstarted")
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [isLoginScreen]);
+
+
   return (
     <ImageBackground
       source={require("../assets/auth/welcomebg.jpg")}
@@ -63,7 +86,7 @@ const Login = ({ navigation }) => {
       <View style={styles.container}>
         <Text style={styles.Heading}>Login</Text>
         <Text style={styles.text}>Signin to your account</Text>
-        <Text style={{ color: "red" }}>{authError}</Text>
+        <Text style={{ color: "#F7665E" }}>{authError}</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}

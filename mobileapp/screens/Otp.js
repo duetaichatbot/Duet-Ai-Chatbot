@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -13,30 +13,37 @@ const Otp = ({ route, navigation }) => {
   const { email } = route.params;
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
-  const [verificationCode, setVerificationCode] = useState("");
-  const [resendOtpMessage, setResendOtpMessage] = useState("");
+  const [verificationCode, setVerificationCode] = useState(["", "", "", ""]);
 
-  const handleChangeCode = (text, index) => {
-    let updatedCode = verificationCode.split("");
-    updatedCode[index] = text;
-    setVerificationCode(updatedCode.join(""));
+  const [resendOtpMessage, setResendOtpMessage] = useState("");
+  const otpInputs = [useRef(null), useRef(null), useRef(null), useRef(null)];
+
+  const handleOTPChange = (text, index) => {
+    if (text.length === 1 && index < 3) {
+      otpInputs[index + 1].current.focus();
+    }
+
+    const newOtp = [...verificationCode];
+    newOtp[index] = text;
+    setVerificationCode(newOtp);
   };
 
   const handleOtp = async () => {
+    const otpCode = verificationCode.join("");
     setAuthError("");
-    if (verificationCode) {
+    if (otpCode) {
       setLoading(true);
       try {
         const res = await AxiosInstance.post("/api/user/verify-otp", {
           email,
-          otp: verificationCode,
+          otp: otpCode,
         });
 
         if (res.status === 200) {
           navigation.navigate("newpassword", { email });
         }
         setLoading(false);
-        setVerificationCode("");
+        setVerificationCode(["", "", "", ""]);
       } catch (error) {
         setAuthError(error.response.data.message);
         setLoading(false);
@@ -59,7 +66,7 @@ const Otp = ({ route, navigation }) => {
         setResendOtpMessage(res.data.message);
       }
       setLoading(false);
-      setVerificationCode("");
+      setVerificationCode(["", "", "", ""]);
     } catch (error) {
       setAuthError(error.response.data.message);
       setLoading(false);
@@ -74,16 +81,18 @@ const Otp = ({ route, navigation }) => {
       <View style={styles.container}>
         <Text style={styles.Heading}>Verify OTP</Text>
         <Text style={styles.text}>Check your email</Text>
-        <Text style={{ color: "red" }}>{authError}</Text>
+        <Text style={{ color: "#F7665E" }}>{authError}</Text>
         <View style={{ flexDirection: "row" }}>
-          {[0, 1, 2, 3].map((index) => (
+          {verificationCode.map((digit, index) => (
             <TextInput
               key={index}
+              ref={otpInputs[index]}
               style={styles.inputs}
-              value={verificationCode[index] || ""}
-              onChangeText={(text) => handleChangeCode(text, index)}
+              placeholder="0"
               keyboardType="numeric"
               maxLength={1}
+              value={digit}
+              onChangeText={(text) => handleOTPChange(text, index)}
             />
           ))}
         </View>
@@ -116,12 +125,13 @@ const Otp = ({ route, navigation }) => {
             <Text style={{ color: "lightblue" }}> Resend OTP</Text>
           </TouchableOpacity>
         </View>
-        <Text style={{ color: "lightgreen" }}>{resendOtpMessage && resendOtpMessage+" ✔"}</Text>
+        <Text style={{ color: "lightgreen" }}>
+          {resendOtpMessage && resendOtpMessage + " ✔"}
+        </Text>
       </View>
     </ImageBackground>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {

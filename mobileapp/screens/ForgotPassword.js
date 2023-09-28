@@ -49,7 +49,7 @@ const ForgotPassword = ({ navigation }) => {
     >
       <View style={styles.container}>
         <Text style={styles.Heading}>Forgot Password</Text>
-        <Text style={{ color: "red" }}>{authError}</Text>
+        <Text style={{ color: "#F7665E" }}>{authError}</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}

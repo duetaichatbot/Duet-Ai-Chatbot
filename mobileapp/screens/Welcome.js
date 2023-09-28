@@ -6,10 +6,12 @@ import {
   TouchableOpacity,
   Image,
   SafeAreaView,
+  BackHandler,
 } from "react-native";
 import React, { useState } from "react";
 import FontAwesome5 from "react-native-vector-icons/MaterialCommunityIcons";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useEffect } from "react";
 
 const Welcome = ({ navigation }) => {
   const [logoutBtn, setLogoutBtn] = useState(false);
@@ -26,7 +28,6 @@ const Welcome = ({ navigation }) => {
     })();
   }, []);
 
-  
   const logoutUser = async () => {
     AsyncStorage.clear()
       .then(() => {
@@ -35,10 +36,30 @@ const Welcome = ({ navigation }) => {
         };
       })
       .catch((err) => console.log("unable to logout", err));
+    setLogoutBtn(false);
     navigation.navigate("login");
   };
 
+  const [isWelcomeScreen, setIsWelcomeScreen] = useState(true);
+
+  useEffect(() => {
+    const backAction = () => {
+      if (isWelcomeScreen) {
+        BackHandler.exitApp();
+        return true;
+      }
+    };
+
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      backAction
+    );
+
+    return () => backHandler.remove();
+  }, [isWelcomeScreen]);
+
   return (
+    <>
     <ImageBackground
       source={require("../assets/auth/welcomebg.jpg")}
       style={styles.backgroundImage}
@@ -154,6 +175,8 @@ const Welcome = ({ navigation }) => {
         </View>
       </SafeAreaView>
     </ImageBackground>
+    </>
+
   );
 };
 

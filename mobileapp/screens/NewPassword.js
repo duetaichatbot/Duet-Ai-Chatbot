@@ -8,7 +8,6 @@ import {
   TouchableOpacity,
   ToastAndroid,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosInstance from "../config";
 
 const NewPassword = ({ route, navigation }) => {
@@ -28,7 +27,6 @@ const NewPassword = ({ route, navigation }) => {
           cpassword,
           email,
         });
-        console.log(res, "sdfsdf");
         if (res.status === 200) {
           ToastAndroid.show(
             "password change successfully!",
@@ -55,7 +53,7 @@ const NewPassword = ({ route, navigation }) => {
     >
       <View style={styles.container}>
         <Text style={styles.Heading}>New Password</Text>
-        <Text style={{ color: "red" }}>{authError}</Text>
+        <Text style={{ color: "#F7665E" }}>{authError}</Text>
 
         <TextInput
           value={password}

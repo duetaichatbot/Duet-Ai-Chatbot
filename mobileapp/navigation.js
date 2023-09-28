@@ -46,6 +46,11 @@ const RootNavigation = (props) => {
           component={GetStarted}
           options={{ title: "getstarted" }}
         />
+        {/* <Stack.Screen
+          name="getstarted"
+          component={OTPScreen}
+          options={{ title: "getstarted" }}
+        /> */}
         <Stack.Screen
           name="login"
           component={Login}

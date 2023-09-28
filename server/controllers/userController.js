@@ -122,7 +122,7 @@ const verifyOtp = async (req, res) => {
     if (!findUser) {
       return res
         .status(404)
-        .json({ status: "failed", message: "User not found!" }); // Use 404 for "Not Found"
+        .json({ status: "failed", message: "User not found!" });
     }
 
     if (findUser.otpExpire < Date.now()) {
@@ -135,15 +135,15 @@ const verifyOtp = async (req, res) => {
     if (findUser.otpCode.toString() === otp.toString()) {
       return res
         .status(200)
-        .json({ status: "successful", message: "OTP verified!" }); // Correct the typo 'successfull' to 'successful'
+        .json({ status: "successful", message: "OTP verified!" });
     }
 
     res.status(400).json({ status: "failed", message: "Invalid code" });
   } catch (error) {
-    console.error(error); // Log the error for debugging purposes
+    console.error(error); 
     res
       .status(500)
-      .json({ status: "failed", message: "Internal server error" }); // Add a meaningful response for internal server error
+      .json({ status: "failed", message: "Internal server error" }); 
   }
 };
 
@@ -156,7 +156,7 @@ const userPasswordReset = async (req, res) => {
     if (!user) {
       return res
         .status(404)
-        .json({ status: "failed", message: "User not found!" }); // Use 404 for "Not Found"
+        .json({ status: "failed", message: "User not found!" }); 
     }
 
     if (password === cpassword) {
@@ -215,6 +215,7 @@ const resendOtp = async (req, res) => {
     res.status(500).json({ status: "failed", message: "Email is required" });
   }
 };
+
 export {
   userRegistration,
   userLogin,
