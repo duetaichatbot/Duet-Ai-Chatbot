@@ -140,10 +140,10 @@ const verifyOtp = async (req, res) => {
 
     res.status(400).json({ status: "failed", message: "Invalid code" });
   } catch (error) {
-    console.error(error); 
+    console.error(error);
     res
       .status(500)
-      .json({ status: "failed", message: "Internal server error" }); 
+      .json({ status: "failed", message: "Internal server error" });
   }
 };
 
@@ -156,7 +156,7 @@ const userPasswordReset = async (req, res) => {
     if (!user) {
       return res
         .status(404)
-        .json({ status: "failed", message: "User not found!" }); 
+        .json({ status: "failed", message: "User not found!" });
     }
 
     if (password === cpassword) {
