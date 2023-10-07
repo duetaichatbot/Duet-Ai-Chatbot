@@ -27,8 +27,8 @@ const Feedback = ({ navigation }) => {
       style={styles.backgroundImage}
     >
       <View style={styles.container}>
-      <View style={styles.header_sec}>
-      <TouchableOpacity onPress={() => navigation.goBack()}>
+        <View style={styles.header_sec}>
+          <TouchableOpacity onPress={() => navigation.goBack()}>
             <FontAwesome5
               name="arrow-back"
               type="MaterialIcons"
@@ -36,17 +36,20 @@ const Feedback = ({ navigation }) => {
               size={25}
             />
           </TouchableOpacity>
-      </View>
+        </View>
         <Text style={styles.Heading}>🌟 Feedback 🌟</Text>
-        <Text style={styles.subtext}>Your feedback helps us grow and serve you better!</Text>
+        <Text style={styles.subtext}>
+          Your feedback helps us grow and serve you better!
+        </Text>
         <View style={styles.inputView}>
           <TextInput
             value={password}
             onChangeText={onChangePass}
             style={styles.inputs}
-            placeholder="Type here..."
+            placeholder="Give your feedback here..."
             placeholderTextColor="#c2c0c0"
             multiline={true}
+            maxLength={200}
           />
         </View>
 
@@ -74,7 +77,9 @@ const Feedback = ({ navigation }) => {
         </View>
 
         <View style={styles.footertext}>
-          <Text style={{ color: "lightgreen" }}>Thanks for your feedback! </Text>
+          <Text style={{ color: "lightgreen" }}>
+            Thanks for your feedback!{" "}
+          </Text>
         </View>
       </View>
     </ImageBackground>
@@ -96,9 +101,8 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
   inputs: {
-    width: "80%",
-    padding: 5,
-    margin: 10,
+    width: "100%",
+    padding: 10,
     fontSize: 16,
     color: "white",
     fontStyle: "normal",
@@ -137,7 +141,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
-    zIndex:10
+    zIndex: 10,
   },
 });
 

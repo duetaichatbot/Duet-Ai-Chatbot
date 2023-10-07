@@ -50,7 +50,7 @@ const Signup = ({ navigation }) => {
         setLoading(false);
       }
     } else {
-      setAuthError("Email is not Valid");
+      setAuthError("Email is not valid");
     }
   };
 
@@ -58,10 +58,7 @@ const Signup = ({ navigation }) => {
     navigation.navigate("login");
   };
 
-  const NavigatetoForgotpassScreen = () => {
-    navigation.navigate("forgotpass");
-  };
-
+ 
   return (
     <ImageBackground
       source={require("../assets/auth/welcomebg.jpg")}
@@ -70,7 +67,7 @@ const Signup = ({ navigation }) => {
       <View style={styles.container}>
         <Text style={styles.Heading}>Signup</Text>
         <Text style={styles.text}>Create your account</Text>
-        <Text style={{ color: "red" }}>{authError}</Text>
+        <Text style={{ color: "#F7665E" }}>{authError}</Text>
         <TextInput
           value={name}
           onChangeText={setName}
@@ -138,7 +135,6 @@ const Signup = ({ navigation }) => {
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,

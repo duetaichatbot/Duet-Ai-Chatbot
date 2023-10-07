@@ -75,88 +75,152 @@ const userLogin = async (req, res) => {
   }
 };
 
-// change user password after login through settings etc..
-const changeUserPassword = async (req, res) => {
-  const { password, cpassword } = req.body;
-  if (password && cpassword) {
-    if (password === cpassword) {
-      const salt = await bcrypt.genSalt(10);
-      const newHashPassword = await bcrypt.hash(password, salt);
-      await userModal.findByIdAndUpdate(req.user._id, {
-        $set: { password: newHashPassword },
-      });
-      res.send({ status: "200", message: "change password successfully" });
-    } else {
-      res.send({
-        status: "failed",
-        message: "password and confirm password not matched",
-      });
-    }
-  } else {
-    res.send({ status: "failed", message: "All Fields are required" });
-  }
-};
-
-// Reset password, or forget password to send email...
+// forget password to send email...
 const sendEmailResetPassword = async (req, res) => {
   const { email } = req.body;
   if (email) {
     const user = await userModal.findOne({ email: email });
     if (user) {
-      const secret = user._id + process.env.JWT_SECRET_KEY;
-      const token = jwt.sign({ userID: user._id }, secret, { expiresIn: "1d" });
-      const link = `http://127.0.0.1:3000/api/user/reset/${user._id}/${token}`;
-      console.log(link, "starting token");
+      // create otp
+      const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
+      user.otpCode = otpCode;
+      user.otpExpire = Date.now() + 600000;
+      console.log(otpCode, "code here otp.....");
       // send email...
-      let info = await transporter.sendMail({
-        from: "duetaichatbot@gmail.com",
-        to: user.email,
-        subject: "DUET AI CHATBOT Password Reset Link",
-        html: `<a href=${link}>Click Here</a> to reset password`,
-      });
-      res.send({
+      // let info = await transporter.sendMail({
+      //   from: "duetaichatbot@gmail.com",
+      //   to: user.email,
+      //   subject: "DUET AI CHATBOT Password Reset Link",
+      //   html: `<p>Confirm Your OTP ${otpCode}</p>`,
+      // });
+
+      // save otp in user schema...
+      await user.save();
+
+      res.status(200).json({
         status: "success",
-        message: "Email Sent.. Check Your Email",
-        info: info,
+        message: "OTP Sent.. Check Your Email",
+        // info: info,
       });
     } else {
-      res.send({ status: "failed", message: "Email does not exist" });
+      res
+        .status(404)
+        .json({ status: "failed", message: "Email does not exist" });
     }
   } else {
-    res.send({ status: "failed", message: "Email is required" });
+    res.status(500).json({ status: "failed", message: "Email is required" });
   }
 };
 
-// After email send allow password reset..
-const userPasswordReset = async (req, res) => {
-  const { password, cpassword } = req.body;
-  const { id, token } = req.params;
-  const user = await userModal.findById(id);
-  const new_secret = user._id + process.env.JWT_SECRET_KEY;
+const verifyOtp = async (req, res) => {
   try {
-    console.log(token, "xxxxx", new_secret);
-    jwt.verify(token, new_secret);
-    if (password && cpassword) {
-      if (password === cpassword) {
-        const salt = await bcrypt.genSalt(10);
-        const newHashPassword = await bcrypt.hash(password, salt);
-        await userModal.findByIdAndUpdate(id, {
-          $set: { password: newHashPassword },
-        });
-        res.send({ status: "200", message: "Password reset successfully" });
-      } else {
-        res.send({ status: "failed", message: "Passwords do not match" });
-      }
+    const otp = req.body.otp;
+    const email = req.body.email;
+
+    const findUser = await userModal.findOne({ email: email });
+
+    if (!findUser) {
+      return res
+        .status(404)
+        .json({ status: "failed", message: "User not found!" });
+    }
+
+    if (findUser.otpExpire < Date.now()) {
+      return res.status(400).json({
+        status: "failed",
+        message: "Your OTP code is expired, resend otp",
+      });
+    }
+
+    if (findUser.otpCode.toString() === otp.toString()) {
+      return res
+        .status(200)
+        .json({ status: "successful", message: "OTP verified!" });
+    }
+
+    res.status(400).json({ status: "failed", message: "Invalid code" });
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ status: "failed", message: "Internal server error" });
+  }
+};
+
+const userPasswordReset = async (req, res) => {
+  try {
+    const { password, cpassword, email } = req.body;
+    console.log(email, "sdsdf");
+    const user = await userModal.findOne({ email: email });
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ status: "failed", message: "User not found!" });
+    }
+
+    if (password === cpassword) {
+      const salt = await bcrypt.genSalt(10);
+      const newHashPassword = await bcrypt.hash(password, salt);
+      await userModal.findByIdAndUpdate(user._id, {
+        $set: { password: newHashPassword },
+      });
+      res
+        .status(200)
+        .json({ status: "successful", message: "Password reset successfully" });
+    } else {
+      res
+        .status(400)
+        .json({ status: "failed", message: "Passwords do not match" });
     }
   } catch (error) {
-    res.send({ status: "failed", message: "Token does not match" });
+    res
+      .status(500)
+      .json({ status: "failed", message: "Internal server error" });
+  }
+};
+
+const resendOtp = async (req, res) => {
+  const { email } = req.body;
+  if (email) {
+    const user = await userModal.findOne({ email: email });
+    if (user) {
+      // create otp
+      const otpCode = Math.floor(1000 + Math.random() * 9000).toString();
+      user.otpCode = otpCode;
+      user.otpExpire = Date.now() + 600000;
+      console.log(otpCode, "code here otp.....");
+      // send email...
+      // let info = await transporter.sendMail({
+      //   from: "duetaichatbot@gmail.com",
+      //   to: user.email,
+      //   subject: "DUET AI CHATBOT Password Reset Link",
+      //   html: `<p>Confirm Your OTP ${otpCode}</p>`,
+      // });
+
+      // save otp in user schema...
+      await user.save();
+
+      res.status(200).json({
+        status: "success",
+        message: "OTP Sent.. Check Your Email",
+        // info: info,
+      });
+    } else {
+      res
+        .status(404)
+        .json({ status: "failed", message: "Email does not exist" });
+    }
+  } else {
+    res.status(500).json({ status: "failed", message: "Email is required" });
   }
 };
 
 export {
   userRegistration,
   userLogin,
-  changeUserPassword,
   sendEmailResetPassword,
   userPasswordReset,
+  verifyOtp,
+  resendOtp,
 };

@@ -6,9 +6,7 @@ import {
   TextInput,
   ImageBackground,
   TouchableOpacity,
-  ToastAndroid,
 } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import AxiosInstance from "../config";
 
 const ForgotPassword = ({ navigation }) => {
@@ -18,34 +16,30 @@ const ForgotPassword = ({ navigation }) => {
 
   let emailRegex = /^\w+[\w.-]*@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
 
-  const handleLoginUser = async () => {
-    navigation.navigate("otp");
-    // setAuthError("");
-    // if (emailRegex.test(email)) {
-    //   setLoading(true);
-    //   try {
-    //     const res = await AxiosInstance.post("/api/user/login", {
-    //       email,
-    //       password,
-    //     });
-    //     if (res.status === 200) {
-    //       await AsyncStorage.setItem(
-    //         "userdata",
-    //         JSON.stringify(res.data.user.email)
-    //       );
-    //       ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
-    //       navigation.navigate("home");
-    //     }
-    //     setLoading(false);
-    //     setEmail("");
-    //     onChangePass("");
-    //   } catch (error) {
-    //     setAuthError(error.response.data.message);
-    //     setLoading(false);
-    //   }
-    // } else {
-    //   setAuthError("Email is not Valid");
-    // }
+  const handleForgotPassword = async () => {
+    setAuthError("");
+    if (email) {
+      if (emailRegex.test(email)) {
+        setLoading(true);
+        try {
+          const res = await AxiosInstance.post("/api/user/forgot-password", {
+            email,
+          });
+          if (res.status === 200) {
+            navigation.navigate("otp", { email });
+          }
+          setLoading(false);
+          setEmail("");
+        } catch (error) {
+          setAuthError(error.response.data.message);
+          setLoading(false);
+        }
+      } else {
+        setAuthError("Email is not valid");
+      }
+    } else {
+      setAuthError("Email is required*");
+    }
   };
 
   return (
@@ -55,7 +49,7 @@ const ForgotPassword = ({ navigation }) => {
     >
       <View style={styles.container}>
         <Text style={styles.Heading}>Forgot Password</Text>
-        <Text style={{ color: "red" }}>{authError}</Text>
+        <Text style={{ color: "#F7665E" }}>{authError}</Text>
         <TextInput
           value={email}
           onChangeText={setEmail}
@@ -72,7 +66,7 @@ const ForgotPassword = ({ navigation }) => {
               borderRadius: 5,
               width: "80%",
             }}
-            onPress={!loading ? handleLoginUser : null}
+            onPress={!loading ? handleForgotPassword : null}
           >
             <Text
               style={{
@@ -91,7 +85,6 @@ const ForgotPassword = ({ navigation }) => {
   );
 };
 
-// define your styles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
