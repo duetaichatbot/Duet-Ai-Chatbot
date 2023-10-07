@@ -3,6 +3,12 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import GetStarted from "./screens/GetStarted";
 import Login from "./screens/Login";
+import Signup from "./screens/Signup";
+import Welcome from "./screens/Welcome";
+import Chat from "./screens/Chat";
+import Feedback from "./screens/Feedback";
+import ForgotPassword from "./screens/ForgotPassword";
+import Otp from "./screens/Otp";
 
 const RootNavigation = (props) => {
   const Stack = createNativeStackNavigator();
@@ -11,7 +17,6 @@ const RootNavigation = (props) => {
   };
 
   const transitionConfig = {
-    // Customize the transition animation here
     animation: "spring",
     config: {
       stiffness: 500,
@@ -26,7 +31,7 @@ const RootNavigation = (props) => {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName="getstarted"
+        initialRouteName={props.initRoute}
         screenOptions={{
           ...screenOptions,
           transitionSpec: {
@@ -35,21 +40,49 @@ const RootNavigation = (props) => {
           },
         }}
       >
-        {/* screens */}
         <Stack.Screen
           name="getstarted"
           component={GetStarted}
           options={{ title: "getstarted" }}
         />
-         <Stack.Screen
-          name="Login"
+        <Stack.Screen
+          name="login"
           component={Login}
           options={{ title: "Login" }}
+        />
+        <Stack.Screen
+          name="signup"
+          component={Signup}
+          options={{ title: "signup" }}
+        />
+        <Stack.Screen
+          name="home"
+          component={Welcome}
+          options={{ title: "home" }}
+        />
+        <Stack.Screen
+          name="chat"
+          component={Chat}
+          options={{ title: "chat" }}
+        />
+        <Stack.Screen
+          name="feedback"
+          component={Feedback}
+          options={{ title: "feedback" }}
+        />
+        <Stack.Screen
+          name="forgot"
+          component={ForgotPassword}
+          options={{ title: "forgot" }}
+        />
+        <Stack.Screen
+          name="otp"
+          component={Otp}
+          options={{ title: "otp" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
   );
 };
-
 
 export default RootNavigation;

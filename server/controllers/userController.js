@@ -7,13 +7,12 @@ dotenv.config();
 
 // register new user...
 const userRegistration = async (req, res) => {
-  const { name, email, password, cpassword, tc } = req.body;
+  const { name, email, password, cpassword } = req.body;
   const user = await userModal.findOne({ email: email });
   if (user) {
-    res.send({ status: "failed", message: "Email already exists" });
+    res.status(400).json({ status: "failed", message: "Email already exists" });
   } else {
-    // validate all field contain data or not
-    if (name && email && password && cpassword && tc) {
+    if (name && email && password && cpassword) {
       if (password === cpassword) {
         try {
           const salt = await bcrypt.genSalt(10);
@@ -22,7 +21,6 @@ const userRegistration = async (req, res) => {
             name: name,
             email: email,
             password: hashPassword,
-            tc: tc,
           });
 
           const newUser = await createUser.save();
@@ -32,20 +30,17 @@ const userRegistration = async (req, res) => {
             process.env.JWT_SECRET_KEY,
             { expiresIn: "5d" }
           );
-          res.send({ user: newUser, token, status: "successful" });
+          res.status(201).json({ user: newUser, token, status: "successful" });
         } catch (error) {
-          res
-            .status(500)
-            .json({ status: "failed", message: "unable to register" });
+          res.status(500).json({ message: "Internal server error! try later" });
         }
       } else {
-        res.send({
-          status: "failed",
-          message: "password and confirm password not matched",
-        });
+        res
+          .status(400)
+          .json({ message: "password and confirm password not matched" });
       }
     } else {
-      res.send({ status: "failed", message: "All Fields are required" });
+      res.status(400).json({ message: "All Fields are required" });
     }
   }
 };
@@ -65,18 +60,18 @@ const userLogin = async (req, res) => {
             process.env.JWT_SECRET_KEY,
             { expiresIn: "5d" }
           );
-          res.send({ user, token, status: "successful" });
+          res.status(200).json({ user, token, status: "successful" });
         } else {
-          res.send({ status: "failed", message: "invalid email or password" });
+          res.status(400).json({ message: "invalid email or password" });
         }
       } else {
-        res.send({ status: "failed", message: "You are not registered" });
+        res.status(404).json({ message: "You are not registered" });
       }
     } else {
-      res.send({ status: "failed", message: "All Fields are required" });
+      res.status(400).json({ message: "All Fields are required" });
     }
   } catch (error) {
-    res.send({ status: "failed", message: "Unable to login" });
+    res.status(500).json({ message: "Internal server error! try later" });
   }
 };
 
