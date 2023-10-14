@@ -23,7 +23,7 @@ router.post("/post-faq", async (req, res) => {
 
 router.get("/get-faqs", async (req, res) => {
     try {
-        const faqs  = await faqModal.find();
+        const faqs  = await faqModal();
         res.status(200).json(faqs);
     } catch (error) {
         console.log(error); 
