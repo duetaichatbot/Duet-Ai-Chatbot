@@ -1,3 +1,4 @@
+import AxiosInstance from "../config";
 import React, { useState, useEffect } from "react";
 import {
   View,
@@ -6,43 +7,58 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  ImageBackground,
+  Image
 } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/MaterialIcons";
 
 const Chat = ({ navigation }) => {
-  const chatData = {
-    messages: [
-      { id: "1", sender: "user", text: "Hello, John!" },
-      { id: "2", sender: "other", text: "Hi there!" },
-      { id: "3", sender: "user", text: "How are you?" },
-      { id: "4", sender: "other", text: "I am doing well, thanks!" },
-      { id: "5", sender: "user", text: "Thats great to hear!" },
-    ],
-  };
-
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSendMessage = () => {
-    if (newMessage.trim() !== "") {
-      const newMsg = {
-        id: Date.now().toString(),
-        sender: "user",
-        text: newMessage.trim(),
-      };
-      setMessages([...messages, newMsg]);
-      setNewMessage("");
+  const handleSendMessage = async () => {
+    setIsLoading(true);
+    setMessages((prev) => {
+      return [...prev, { text: newMessage, from: "user" }];
+    });
+
+    try {
+      let response = await AxiosInstance.post("/message", {
+        query: newMessage,
+      });
+      if (response.status === 200) {
+        setNewMessage("");
+        setTimeout(() => {
+          setMessages((prev) => {
+            return [
+              ...prev,
+              {
+                text: response?.data?.message?.text,
+                from: "bot",
+              },
+            ];
+          });
+          setIsLoading(false);
+        }, 500);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.log(error, "webhook failed");
+      alert("🚫 Something went wrong, try later");
     }
   };
 
+  console.log(messages, "messages");
+
   const renderMessage = ({ item }) => {
     const messageStyle =
-      item.sender === "user" ? styles.userMessage : styles.otherMessage;
+      item.from === "user" ? styles.userMessage : styles.otherMessage;
     return (
-      <View style={[styles.messageContainer, messageStyle]}>
-        <Text style={styles.messageText}>{item.text}</Text>
-      </View>
+      <>
+        <View style={[styles.messageContainer, messageStyle]}>
+          <Text style={styles.messageText}>{item.text}</Text>
+        </View>
+      </>
     );
   };
 
@@ -92,12 +108,22 @@ const Chat = ({ navigation }) => {
         </View>
       </View>
       <FlatList
-        data={messages}
+        data={messages.slice().reverse()}
         renderItem={renderMessage}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item, index) => index.toString()}
         contentContainerStyle={styles.messagesContainer}
         inverted
       />
+      <>
+        {isLoading ? (
+          <View style={[styles.messageContainer, styles.otherMessage, styles.loadingBot]}>
+              <Image
+                style={{ width: 50, height: 10}}
+                source={require("../assets/loading.gif")}
+              />
+          </View>
+        ) : null}
+      </>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.textInput}
@@ -134,7 +160,7 @@ const styles = StyleSheet.create({
   },
   otherMessage: {
     alignSelf: "flex-start",
-    backgroundColor: "green",
+    backgroundColor: "white",
   },
   messageText: {
     color: "#000",
@@ -173,8 +199,11 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
-    zIndex:10
+    zIndex: 10,
   },
+  loadingBot: {
+    marginLeft: 11,
+  }
 });
 
 export default Chat;
