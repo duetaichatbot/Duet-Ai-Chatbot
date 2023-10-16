@@ -2,6 +2,7 @@ import userModal from "../models/User.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import transporter from "../config/emailConfig.js";
+
 import dotenv from "dotenv";
 dotenv.config();
 
@@ -87,12 +88,12 @@ const sendEmailResetPassword = async (req, res) => {
       user.otpExpire = Date.now() + 600000;
       console.log(otpCode, "code here otp.....");
       // send email...
-      // let info = await transporter.sendMail({
-      //   from: "duetaichatbot@gmail.com",
-      //   to: user.email,
-      //   subject: "DUET AI CHATBOT Password Reset Link",
-      //   html: `<p>Confirm Your OTP ${otpCode}</p>`,
-      // });
+      let info = await transporter.sendMail({
+        from: "duetaichatbot@gmail.com",
+        to: user.email,
+        subject: "DUET AI CHATBOT Password Reset Link",
+        html: `<p>Confirm Your OTP ${otpCode}</p>`,
+      });
 
       // save otp in user schema...
       await user.save();
@@ -100,7 +101,7 @@ const sendEmailResetPassword = async (req, res) => {
       res.status(200).json({
         status: "success",
         message: "OTP Sent.. Check Your Email",
-        // info: info,
+        info: info,
       });
     } else {
       res
@@ -191,12 +192,12 @@ const resendOtp = async (req, res) => {
       user.otpExpire = Date.now() + 600000;
       console.log(otpCode, "code here otp.....");
       // send email...
-      // let info = await transporter.sendMail({
-      //   from: "duetaichatbot@gmail.com",
-      //   to: user.email,
-      //   subject: "DUET AI CHATBOT Password Reset Link",
-      //   html: `<p>Confirm Your OTP ${otpCode}</p>`,
-      // });
+      let info = await transporter.sendMail({
+        from: "duetaichatbot@gmail.com",
+        to: user.email,
+        subject: "DUET AI CHATBOT Password Reset Link",
+        html: `<p>Confirm Your OTP ${otpCode}</p>`,
+      });
 
       // save otp in user schema...
       await user.save();
@@ -204,7 +205,7 @@ const resendOtp = async (req, res) => {
       res.status(200).json({
         status: "success",
         message: "OTP Sent.. Check Your Email",
-        // info: info,
+        info: info,
       });
     } else {
       res
