@@ -24,7 +24,7 @@ const Feedback = ({ navigation }) => {
       });
       console.log(res, 'statsus');
       if (res.status === 201) {
-        alert("Thankyou! for sharing your feedback");
+        alert("Thank you for sharing your feedback!");
         navigation.navigate("home");
       }
     } catch (error) {

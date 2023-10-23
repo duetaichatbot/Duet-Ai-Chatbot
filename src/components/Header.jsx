@@ -18,7 +18,21 @@ const Header = () => {
             Duet Ai Chatbot
           </Link>
 
+     <div className="d-flex gap-5">
+        <span >
+        <NavLink to="/feedbacks" className="text-light" style={{
+          textDecoration:"none"
+        }}>Feedback</NavLink>
+        </span>
+        <span >
+        <NavLink to="/signup" className="text-light" style={{
+          textDecoration:"none"
+        }}>Users</NavLink>
+        </span>
+     </div>
           <div>
+
+          
             {userData?.isLoggin ? (
               <>
                 <span>
@@ -32,16 +46,34 @@ const Header = () => {
                   {userData.user.user.name}
                 </span>
                 <span className="mx-2">
-                  <NavLink onClick={() => dispatch(logout())}>Logout</NavLink>
+                  <NavLink onClick={() => dispatch(logout())}
+                   style={{
+                    textDecoration:"none",
+                    color: "#fff",
+                    fontWeight:"bold"
+                  }}
+                  >Logout</NavLink>
                 </span>
               </>
             ) : (
               <>
                 <span className="mx-2">
-                  <NavLink to="/signup">Signup</NavLink>
+                  <NavLink to="/signup"
+                   style={{
+                    textDecoration:"none",
+                    color: "#fff",
+                    fontWeight:"bold"
+                  }}
+                  >Signup</NavLink>
                 </span>
                 <span className="mx-2">
-                  <NavLink to="/login">Login</NavLink>
+                  <NavLink to="/login"
+                   style={{
+                    textDecoration:"none",
+                    color: "#fff",
+                    fontWeight:"bold"
+                  }}
+                  >Login</NavLink>
                 </span>
               </>
             )}
