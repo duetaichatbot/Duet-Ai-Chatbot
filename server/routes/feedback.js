@@ -4,11 +4,11 @@ import feedbackModel from "../models/Feedback.js";
 
 const router = express.Router();
 
-router.post("/post-feedback/:userId", async (req, res) => {
+router.post("/post-feedback", async (req, res) => {
   try {
     const feedbackMessage = req.body.feedback;
-    const userId = req.params.userId;
-    const userExist = await userModal.findById(userId);
+    const email = req.body.email;
+    const userExist = await userModal.findOne({email: email});
 
     if (userExist) {
       const newFeedback = new feedbackModel({

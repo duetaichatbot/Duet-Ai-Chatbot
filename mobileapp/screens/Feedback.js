@@ -8,18 +8,41 @@ import {
   TouchableOpacity,
 } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/MaterialIcons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import AxiosInstance from "../config";
 
 const Feedback = ({ navigation }) => {
   const [email, setEmail] = useState("");
-  const [password, onChangePass] = useState("");
+  const [feedback, setFeedback] = useState("");
+ 
 
-  const handleLoginUser = async () => {
-    navigation.navigate("home");
+  const handledFeedback = async () => {
+    try {
+      const res = await AxiosInstance.post(`/api/feedback/post-feedback`, {
+        email,
+        feedback,
+      });
+      console.log(res, 'statsus');
+      if (res.status === 201) {
+        alert("Thankyou! for sharing your feedback");
+        navigation.navigate("home");
+      }
+    } catch (error) {
+      console.log("failed to post feedback", error);
+      alert("Something went wrong, try later!");
+    }
   };
 
-  const goBack = () => {
-    navigation.goBack();
-  };
+  React.useEffect(() => {
+    (async () => {
+      try {
+        const email = await AsyncStorage.getItem("userdata");
+        setEmail(JSON.parse(email));
+      } catch (error) {
+        console.log(error);
+      }
+    })();
+  }, []);
 
   return (
     <ImageBackground
@@ -43,8 +66,8 @@ const Feedback = ({ navigation }) => {
         </Text>
         <View style={styles.inputView}>
           <TextInput
-            value={password}
-            onChangeText={onChangePass}
+            value={feedback}
+            onChangeText={setFeedback}
             style={styles.inputs}
             placeholder="Give your feedback here..."
             placeholderTextColor="#c2c0c0"
@@ -61,7 +84,7 @@ const Feedback = ({ navigation }) => {
               borderRadius: 5,
               width: "80%",
             }}
-            onPress={handleLoginUser}
+            onPress={handledFeedback}
           >
             <Text
               style={{
@@ -74,12 +97,6 @@ const Feedback = ({ navigation }) => {
               Send
             </Text>
           </TouchableOpacity>
-        </View>
-
-        <View style={styles.footertext}>
-          <Text style={{ color: "lightgreen" }}>
-            Thanks for your feedback!{" "}
-          </Text>
         </View>
       </View>
     </ImageBackground>
