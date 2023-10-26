@@ -7,7 +7,8 @@ import { userLogin } from "../redux/userSlice";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state);
+  const { userData } = useSelector((state) => state);
+  const {loading} = userData;
   const navigate = useNavigate();
 
   

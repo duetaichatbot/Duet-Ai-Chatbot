@@ -6,7 +6,7 @@ import axiosInstance from "../../axiosConfig";
 
 const Header = () => {
   
-  const userData = useSelector((state) => state);
+  const {userData} = useSelector((state) => state);
   const dispatch = useDispatch();
   const baseUrl = axiosInstance.defaults.baseURL;
 
