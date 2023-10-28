@@ -16,10 +16,9 @@ const Signup = () => {
     tc: false,
   });
 
-  
   const dispatch = useDispatch();
-  const { loading } = useSelector((state) => state);
-
+  const { userData } = useSelector((state) => state);
+  const { loading } = userData;
   const handleRegisterField = (e) => {
     if (e.target.name === "tc") {
       setRegisterFields({
@@ -31,23 +30,20 @@ const Signup = () => {
     }
   };
 
-  const handleRegister =  (e) => {
+  const handleRegister = (e) => {
     e.preventDefault();
-      dispatch(registerUser(registerFields))
-      .then(res => {
-
+    dispatch(registerUser(registerFields))
+      .then((res) => {
         if (res.payload.status === "successful") {
           navigate("/");
         } else if (res.payload.status === "failed") {
-          
           setErrorMessage(res.payload.message);
         }
-      }).catch(err => {
-        console.log(err, 'catch error');
-        setErrorMessage(err.message)
       })
-        
-
+      .catch((err) => {
+        console.log(err, "catch error");
+        setErrorMessage(err.message);
+      });
   };
 
   return (
