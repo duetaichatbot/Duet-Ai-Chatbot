@@ -30,6 +30,7 @@ router.post("/post-feedback/:userId", async (req, res) => {
   }
 });
 
+
 router.get("/get-feedbacks", async (req, res) => {
   try {
     const feedbacks = await feedbackModel.find()
