@@ -48,7 +48,6 @@ const Chat = ({ navigation }) => {
     }
   };
 
-  console.log(messages, "messages");
 
   const renderMessage = ({ item }) => {
     const messageStyle =
