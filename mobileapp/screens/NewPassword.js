@@ -11,6 +11,7 @@ import {
 import AxiosInstance from "../config";
 
 const NewPassword = ({ route, navigation }) => {
+  
   const { email } = route.params;
   const [password, onChangePass] = useState("");
   const [cpassword, onChangecPass] = useState("");
