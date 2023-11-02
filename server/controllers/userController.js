@@ -91,7 +91,21 @@ const sendEmailResetPassword = async (req, res) => {
         from: "duetaichatbot@gmail.com",
         to: user.email,
         subject: "DUET AI CHATBOT Password Reset Link",
-        html: `<p>Confirm Your OTP ${otpCode}</p>`,
+        html: `<!DOCTYPE html>
+        <html>
+        <head>
+            <title>DUET AI Chatbot - OTP Confirmation</title>
+        </head>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; text-align: center; padding: 20px;">
+            <div style="background-color: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);">
+                <h1 style="color: #007BFF;">DUET AI Chatbot</h1>
+                <p style="font-size: 25px; margin: 20px 0;">Confirm Your OTP <strong style="color: #007BFF;">${otpCode}</strong></p>
+                <p style="font-size: 16px;">Thank you for using our DUET AI Chatbot. Please enter the OTP code above to complete your verification.</p>
+                <p style="font-size: 16px;">If you didn't request this OTP, please ignore this email.</p>
+            </div>
+        </body>
+        </html>
+        `,
       });
 
       // save otp in user schema...
