@@ -6,7 +6,7 @@ import {
   TextInput,
   ImageBackground,
   TouchableOpacity,
-  ToastAndroid,
+  // ToastAndroid,
   BackHandler,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -34,7 +34,7 @@ const Login = ({ navigation }) => {
             "userdata",
             JSON.stringify(res.data.user.email)
           );
-          ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
+          // ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
           navigation.navigate("home");
         }
         setLoading(false);

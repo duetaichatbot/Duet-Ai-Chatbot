@@ -7,20 +7,20 @@ import { connectDb } from "./config/connectdb.js";
 import userRouter from "./routes/userRoutes.js";
 import orderModel from "./models/OrderPlace.js";
 import messageModel from "./models/Message.js";
-import feedbackRouter from './routes/feedback.js';
-
+import feedbackRouter from "./routes/feedback.js";
 
 import momentTZ from "moment-timezone";
 import moment from "moment";
 import axios from "axios";
-import dialogflow from 'dialogflow';
+import dialogflow from "dialogflow";
+import { dialogflowsKeysVariantResponses } from "./models/Datafeed.js";
+
 dotenv.config();
 const app = express();
 const port = process.env.PORT;
 const __dirname = path.resolve();
 
 const DATABASE_URL = process.env.DATABASE_URL;
-
 
 app.use(cors());
 app.use(morgan("dev"));
@@ -50,7 +50,7 @@ app.post("/message", async (req, res) => {
 
     // TODO: send query to dialogflow and get chatbot response
     // https://dialogflow.googleapis.com
-// projects/<Project ID>/agent/sessions/<Session ID>
+    // projects/<Project ID>/agent/sessions/<Session ID>
     // let response = await axios.post(
     //   "https://dialogflow.googleapis.com/v2/projects/duetagent-l9ou/agent/sessions/<userID>:detectIntent",
     //   {
@@ -65,12 +65,12 @@ app.post("/message", async (req, res) => {
 
     // console.log(response.data, 'axios res....');
 
-
     // using dialogflow library...
+    // "duetagent-l9ou",
     const sessionClient = new dialogflow.SessionsClient();
     const sessionPath = sessionClient.sessionPath(
-      "duetagent-l9ou",
-      "user123"
+      "aichatbot-ascy",
+      body.userId
     );
 
     const request = {
@@ -85,10 +85,9 @@ app.post("/message", async (req, res) => {
 
     // Send request and log result
     const responses = await sessionClient.detectIntent(request);
-    console.log("Detected intent");
     const result = responses[0].queryResult;
 
-    console.log("responses: ", result.fulfillmentText);
+    console.log(body.userId, "responses: ", result.fulfillmentText);
 
     res.send({
       message: {
@@ -141,6 +140,56 @@ const webhookReq = {
   },
   originalDetectIntentRequest: {},
 };
+
+function getDialogflowUserQueryResponse(userInput) {
+  let maxMatchPriority = -1;
+  let bestMatch = null;
+
+  dialogflowsKeysVariantResponses.forEach((item) => {
+    const matchCount = item.keywords.reduce((count, keyword) => {
+      if (userInput.toLowerCase().includes(keyword.toLowerCase())) {
+        return count + 1;
+      }
+      return count;
+    }, 0);
+
+    if (matchCount > maxMatchPriority) {
+      maxMatchPriority = matchCount;
+      bestMatch = item;
+    }
+  });
+
+  return bestMatch
+    ? bestMatch.answer
+    : "I'm sorry, I don't understand that question. Please ask another one.";
+}
+
+app.post("/messages", async (req, res) => {
+  try {
+    const query = req.body.query;
+    if (!query) {
+      res.status(400).send(` required parameter missing. example request body:
+      {
+          "query": "Hi",
+      }`);
+      return;
+    }
+
+    
+    const getResult = await getDialogflowUserQueryResponse(query);
+    console.log('hit api run here', query, getResult);
+
+    res.send({
+      message: {
+        text: getResult,
+      },
+    });
+  } catch (e) {
+    res.status(500).send({
+      message: "server error",
+    });
+  }
+});
 
 app.post("/webhook", async (req, res) => {
   try {
@@ -211,11 +260,11 @@ app.post("/webhook", async (req, res) => {
 });
 
 // //////////////////////////////////////////////
+
 // //////////////////////////////////////////////
 // authentication api's
 app.use("/api/user/", userRouter);
 app.use("/api/feedback", feedbackRouter);
-
 
 app.use("/test", (req, res) => res.send("test ngrok server"));
 

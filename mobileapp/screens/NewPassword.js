@@ -6,7 +6,7 @@ import {
   TextInput,
   ImageBackground,
   TouchableOpacity,
-  ToastAndroid,
+  // ToastAndroid,
 } from "react-native";
 import AxiosInstance from "../config";
 
@@ -29,10 +29,10 @@ const NewPassword = ({ route, navigation }) => {
           email,
         });
         if (res.status === 200) {
-          ToastAndroid.show(
-            "password change successfully!",
-            ToastAndroid.SHORT
-          );
+          // ToastAndroid.show(
+          //   "password change successfully!",
+          //   ToastAndroid.SHORT
+          // );
           navigation.navigate("login");
         }
         setLoading(false);

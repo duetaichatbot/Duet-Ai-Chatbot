@@ -11,6 +11,7 @@ import AxiosInstance from "../config";
 
 const Otp = ({ route, navigation }) => {
   const { email } = route.params;
+
   const [loading, setLoading] = useState(false);
   const [authError, setAuthError] = useState("");
   const [verificationCode, setVerificationCode] = useState(["", "", "", ""]);

@@ -7,26 +7,34 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
-  Image
+  Image,
+  KeyboardAvoidingView,
+  ScrollView
 } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/MaterialIcons";
 
-const Chat = ({ navigation }) => {
+const Chat = ({ route, navigation }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  const userEmail = route.params.email;
+
+  
   const handleSendMessage = async () => {
+    console.log(userEmail, 'eail emaisdf');
     setIsLoading(true);
     setMessages((prev) => {
       return [...prev, { text: newMessage, from: "user" }];
     });
 
     try {
-      let response = await AxiosInstance.post("/message", {
+      let response = await AxiosInstance.post("/messages", {
         query: newMessage,
+        userId: userEmail
       });
       if (response.status === 200) {
+        console.log("responsewa",response.data);
         setNewMessage("");
         setTimeout(() => {
           setMessages((prev) => {
@@ -106,6 +114,7 @@ const Chat = ({ navigation }) => {
           </TouchableOpacity>
         </View>
       </View>
+
       <FlatList
         data={messages.slice().reverse()}
         renderItem={renderMessage}
@@ -124,12 +133,13 @@ const Chat = ({ navigation }) => {
         ) : null}
       </>
       <View style={styles.inputContainer}>
+
         <TextInput
           style={styles.textInput}
           value={newMessage}
           onChangeText={setNewMessage}
           placeholder="Type your question..."
-        />
+          />
         <TouchableOpacity style={styles.sendButton} onPress={handleSendMessage}>
           <Text style={styles.sendButtonText}>Ask</Text>
         </TouchableOpacity>
@@ -169,14 +179,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 8,
+    zIndex: 100,
+    backgroundColor:"black",
+    height: 50
   },
   textInput: {
     flex: 1,
+    // width: "80%",
     backgroundColor: "#fff",
     borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 8,
     marginRight: 8,
+    zIndex:101
   },
   sendButton: {
     paddingVertical: 8,
@@ -192,13 +207,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "100%",
     height: 60,
-    top: 40,
+    top: 20,
     flex: 1,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
     zIndex: 10,
+    backgroundColor:"black"
   },
   loadingBot: {
     marginLeft: 11,

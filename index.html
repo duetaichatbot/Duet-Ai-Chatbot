@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -12,5 +12,321 @@
     
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html> -->
+
+<!-- //////////////////////////////////////////////////////////////// -->
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Keyword-Based FAQ Chatbot</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+
+      #chat-container {
+        max-width: 400px;
+        margin: auto;
+        border: 1px solid #ccc;
+        padding: 10px;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+      }
+
+      .user-message,
+      .bot-message {
+        margin: 10px;
+        padding: 8px;
+        border-radius: 5px;
+      }
+
+      .user-message {
+        background-color: #e6f7ff;
+        text-align: right;
+      }
+
+      .bot-message {
+        background-color: #fff;
+        text-align: left;
+      }
+
+      #input-container {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      #user-input {
+        padding: 8px;
+        width: 60%;
+      }
+
+      #submit-btn {
+        padding: 8px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="chat-container"></div>
+    <div id="input-container">
+      <input type="text" id="user-input" placeholder="Type your question..." />
+      <button id="submit-btn" onclick="handleUserInput()">Submit</button>
+    </div>
+
+    <script>
+      // const faqData = [
+      //   {
+      //     keywords: ["HEC", "recognized"],
+      //     answer:
+      //       "Dawood University of Engineering and Technology (DUET) in Karachi, Pakistan, is recognized by the Higher Education Commission (HEC) of Pakistan.",
+      //   },
+      //   {
+      //     keywords: ["HEC", "recognized"],
+      //     answer:
+      //       "Absolutely, Dawood University of Engineering and Technology (DUET) in Karachi, Pakistan, is recognized by the Higher Education Commission (HEC) of Pakistan.",
+      //   },
+      //   {
+      //     keywords: ["environment", "University"],
+      //     answer:
+      //       "DUET, situated in Karachi, Pakistan, offers an invigorating academic atmosphere. With modern classrooms, well-equipped labs, and an extensive library, the campus nurtures an environment perfect for fostering learning and innovation. It's designed to empower a new generation of proficient engineers and technology experts.",
+      //   },
+      //   {
+      //     keywords: ["faculties"],
+      //     answer:
+      //       "DUET boasts a diverse faculty comprising professors, associate professors, assistant professors, and lecturers across various disciplines.",
+      //   },
+      //   {
+      //     keywords: ["semester fees", "CS Department"],
+      //     answer:
+      //       "The semester fees for BS in Computer Science, Cyber Security, and Artificial Intelligence for the 1st Semester are RS:66,600.",
+      //   },
+      //   {
+      //     keywords: ["international opportunities", "post-graduation"],
+      //     answer:
+      //       "The university's approach to sending students abroad after graduation varies. Consult the academic advisors or the international affairs office at Dawood University for details on post-graduation programs, including exchange opportunities and collaborations with foreign universities.",
+      //   },
+      //   {
+      //     keywords: ["curriculum", "skill development"],
+      //     answer:
+      //       "Our curriculum is meticulously designed to actively foster skill development, equipping students with essential knowledge and tools crucial for professional growth.",
+      //   },
+      //   {
+      //     keywords: ["job opportunities", "after obtaining a degree"],
+      //     answer:
+      //       "Dawood University is dedicated to supporting the career aspirations of its graduates. Career services and job placement programs are available to assist students in exploring and securing employment opportunities in their respective fields.",
+      //   },
+      //   {
+      //     keywords: [
+      //       "non-computer science backgrounds",
+      //       "apply",
+      //       "Computer Science department",
+      //     ],
+      //     answer:
+      //       "Yes, students from non-computer science backgrounds in their intermediate studies can apply to the Computer Science department at DUET. The university encourages diversity and welcomes students interested in computer science.",
+      //   },
+      //   {
+      //     keywords: ["subjects", "software diploma"],
+      //     answer:
+      //       "Subjects like Mathematics, Business, Electronics, Graphic Design, Communication, Cybersecurity, and Data Science complement a software diploma, broadening career prospects and enhancing skills.",
+      //   },
+      //   {
+      //     keywords: [
+      //       "factors",
+      //       "choosing",
+      //       "university",
+      //       "computer science degree",
+      //     ],
+      //     answer:
+      //       "Accreditation, faculty qualifications, curriculum comprehensiveness, facilities, internships, research prospects, alumni network, location, reputation, and cost with available financial aid options are crucial factors to consider.",
+      //   },
+      //   {
+      //     keywords: [
+      //       "prepare",
+      //       "computer science university application process",
+      //     ],
+      //     answer:
+      //       "Maintain a strong academic record, engage in relevant activities, gain practical experience, prepare for standardized tests, craft a compelling personal statement, and secure strong letters of recommendation.",
+      //   },
+      //   {
+      //     keywords: [
+      //       "financial aid",
+      //       "scholarships",
+      //       "computer science students",
+      //     ],
+      //     answer:
+      //       "DUET offers various scholarships through the Financial Aids Department (FAD), including merit-based, need-based, and specialized programs for computer science students. Maintaining a strong academic record, engaging in extracurriculars, and early application increase chances of securing these scholarships.",
+      //   },
+      //   {
+      //     keywords: ["courses", "semester"],
+      //     answer: "Each semester usually consists of 5 to 7 courses.",
+      //   },
+      // ];
+
+      const faqData = [
+        {
+          keywords: ["HEC", "recognized", "accredited"],
+          answer:
+            "Dawood University of Engineering and Technology (DUET) in Karachi, Pakistan, is recognized by the Higher Education Commission (HEC) of Pakistan.",
+        },
+        {
+          keywords: ["HEC", "recognized", "accredited"],
+          answer:
+            "Absolutely, Dawood University of Engineering and Technology (DUET) in Karachi, Pakistan, is recognized by the Higher Education Commission (HEC) of Pakistan.",
+        },
+        {
+          keywords: ["environment", "University", "campus", "academic setting"],
+          answer:
+            "DUET, situated in Karachi, Pakistan, offers an invigorating academic atmosphere. With modern classrooms, well-equipped labs, and an extensive library, the campus nurtures an environment perfect for fostering learning and innovation. It's designed to empower a new generation of proficient engineers and technology experts.",
+        },
+        {
+          keywords: ["faculties", "professors", "lecturers", "academic staff"],
+          answer:
+            "DUET boasts a diverse faculty comprising professors, associate professors, assistant professors, and lecturers across various disciplines.",
+        },
+        {
+          keywords: ["semester fees", "CS Department", "tuition fees"],
+          answer:
+            "The semester fees for BS in Computer Science, Cyber Security, and Artificial Intelligence for the 1st Semester are RS:66,600.",
+        },
+        {
+          keywords: [
+            "international opportunities",
+            "post-graduation",
+            "study abroad",
+            "global programs",
+          ],
+          answer:
+            "The university's approach to sending students abroad after graduation varies. Consult the academic advisors or the international affairs office at Dawood University for details on post-graduation programs, including exchange opportunities and collaborations with foreign universities.",
+        },
+        {
+          keywords: ["curriculum", "skill development", "educational program"],
+          answer:
+            "Our curriculum is meticulously designed to actively foster skill development, equipping students with essential knowledge and tools crucial for professional growth.",
+        },
+        {
+          keywords: [
+            "job opportunities",
+            "after obtaining a degree",
+            "employment prospects",
+          ],
+          answer:
+            "Dawood University is dedicated to supporting the career aspirations of its graduates. Career services and job placement programs are available to assist students in exploring and securing employment opportunities in their respective fields.",
+        },
+        {
+          keywords: [
+            "non-computer science backgrounds",
+            "apply",
+            "Computer Science department",
+            "diverse academic backgrounds",
+          ],
+          answer:
+            "Yes, students from non-computer science backgrounds in their intermediate studies can apply to the Computer Science department at DUET. The university encourages diversity and welcomes students interested in computer science.",
+        },
+        {
+          keywords: ["subjects", "software diploma", "course content"],
+          answer:
+            "Subjects like Mathematics, Business, Electronics, Graphic Design, Communication, Cybersecurity, and Data Science complement a software diploma, broadening career prospects and enhancing skills.",
+        },
+        {
+          keywords: [
+            "factors",
+            "choosing",
+            "university",
+            "computer science degree",
+            "selection criteria",
+          ],
+          answer:
+            "Accreditation, faculty qualifications, curriculum comprehensiveness, facilities, internships, research prospects, alumni network, location, reputation, and cost with available financial aid options are crucial factors to consider.",
+        },
+        {
+          keywords: [
+            "prepare",
+            "computer science university application process",
+            "application preparation",
+          ],
+          answer:
+            "Maintain a strong academic record, engage in relevant activities, gain practical experience, prepare for standardized tests, craft a compelling personal statement, and secure strong letters of recommendation.",
+        },
+        {
+          keywords: [
+            "financial aid",
+            "scholarships",
+            "computer science students",
+            "financial assistance",
+          ],
+          answer:
+            "DUET offers various scholarships through the Financial Aids Department (FAD), including merit-based, need-based, and specialized programs for computer science students. Maintaining a strong academic record, engaging in extracurriculars, and early application increase chances of securing these scholarships.",
+        },
+        {
+          keywords: [
+            "courses",
+            "semester",
+            "academic subjects",
+            "class offerings",
+          ],
+          answer: "Each semester usually consists of 5 to 7 courses.",
+        },
+      ];
+
+      const chatContainer = document.getElementById("chat-container");
+      const userInputField = document.getElementById("user-input");
+
+      function addUserMessage(message) {
+        const userMessage = document.createElement("div");
+        userMessage.classList.add("user-message");
+        userMessage.textContent = message;
+        chatContainer.appendChild(userMessage);
+      }
+
+      function addBotMessage(message) {
+        const botMessage = document.createElement("div");
+        botMessage.classList.add("bot-message");
+        botMessage.textContent = message;
+        chatContainer.appendChild(botMessage);
+      }
+
+      function handleUserInput() {
+        const userInput = userInputField.value.trim();
+        if (userInput !== "") {
+          addUserMessage(userInput);
+          const botResponse = getBotResponse(userInput);
+          addBotMessage(botResponse);
+          userInputField.value = "";
+        }
+      }
+
+      function getBotResponse(userInput) {
+        let maxMatchPriority = -1;
+        let bestMatch = null;
+
+        faqData.forEach((item) => {
+          const matchCount = item.keywords.reduce((count, keyword) => {
+            if (userInput.toLowerCase().includes(keyword.toLowerCase())) {
+              return count + 1;
+            }
+            return count;
+          }, 0);
+
+          if (matchCount > maxMatchPriority) {
+            maxMatchPriority = matchCount;
+            bestMatch = item;
+          }
+        });
+
+        return bestMatch
+          ? bestMatch.answer
+          : "I'm sorry, I don't understand that question. Please ask another one.";
+      }
+
+      // Initial greeting
+      addBotMessage(
+        "Hi! I'm a keyword-based FAQ chatbot. Feel free to ask me any questions."
+      );
+    </script>
   </body>
 </html>

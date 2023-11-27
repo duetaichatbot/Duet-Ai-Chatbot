@@ -6,7 +6,7 @@ import {
   TextInput,
   ImageBackground,
   TouchableOpacity,
-  ToastAndroid,
+  // ToastAndroid,
 } from "react-native";
 import AxiosInstance from "../config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -37,7 +37,7 @@ const Signup = ({ navigation }) => {
             "userdata",
             JSON.stringify(res.data.user.email)
           );
-          ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
+          // ToastAndroid.show("login successfully!", ToastAndroid.SHORT);
           navigation.navigate("home");
         }
         setLoading(false);
